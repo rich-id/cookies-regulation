@@ -1,0 +1,27 @@
+version: '3.7'
+services:
+    application:
+        container_name: cookies_regulation_app
+        image: richcongress/php:7.3
+        expose:
+            - "5502"
+        ports:
+            - "5503:5503"
+        volumes:
+            - .:/app
+            - ~/.yarn:/home/application/.yarn
+            - ~/.elm:/home/application/.elm
+        environment:
+            - VIRTUAL_HOST=cookies-regulation.test
+            - VIRTUAL_PORT=5502
+        networks:
+            default: {}
+            proxy:
+                aliases:
+                    - proxy
+
+networks:
+    default: ~
+    proxy:
+        external:
+            name: proxy

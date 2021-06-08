@@ -1,0 +1,21 @@
+# Elm
+elm-stuff/
+
+# Auto-saved files
+*~
+
+# Mac Files
+.DS_Store
+
+# Dolphin Files
+.directory
+
+# PhpStorm
+.idea
+
+# Node
+node_modules/
+
+# Project
+dist
+.cache
