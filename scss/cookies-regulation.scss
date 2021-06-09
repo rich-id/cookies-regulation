@@ -127,8 +127,22 @@
     overflow-y: auto;
     position: fixed;
     top: 0;
+    transition: opacity .15s linear;
     width: 100%;
     z-index: 2147483646;
+
+    &:not(.show) {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    &.fade .cookies-regulation-modal-dialog {
+        transition: transform .3s ease-out;
+        transform: translate(0, -50px);
+    }
+    &.show .cookies-regulation-modal-dialog {
+        transform: none;
+    }
 
     .cookies-regulation-modal-dialog {
         height: calc(100% - 124px);
@@ -153,7 +167,7 @@
             padding: 24px;
             pointer-events: auto;
             position: relative;
-            width: 100%;
+            width: auto;
 
             .cookies-regulation-modal-header {
                 color: var(--rich-id-cookies-regulation-secondary);
@@ -175,6 +189,20 @@
                 &.cookies-regulation-modal-body-scrollable {
                     border-radius: 8px;
                     box-shadow: inset 0 0 10px 0 rgba(0, 0, 0, 0.35);
+                }
+
+                .cookies-regulation-information {
+                    display: flex;
+                    padding-bottom: 16px;
+
+                    svg {
+                        margin-right: 16px;
+                        margin-top: 3px;
+                    }
+
+                    a {
+                        margin-right: 4px;
+                    }
                 }
             }
 
@@ -221,13 +249,15 @@
     opacity: .8;
     position: fixed;
     top: 0;
+    transition: opacity .15s linear;
     width: 100vw;
     z-index: 2147483645;
 }
 
-#cookies-regulation-padlock-icon {
-    fill: #808080;
+#cookies-regulation-clock-icon {
+    fill: var(--rich-id-cookies-regulation-secondary);
 }
+
 
 #cookies-regulation-close-icon {
     fill: var(--rich-id-cookies-regulation-primary);
@@ -238,4 +268,12 @@
         cursor: pointer;
         fill: var(--rich-id-cookies-regulation-primary-variant);
     }
+}
+
+#cookies-regulation-padlock-icon {
+    fill: #808080;
+}
+
+#cookies-regulation-share-icon {
+    fill: var(--rich-id-cookies-regulation-secondary);
 }

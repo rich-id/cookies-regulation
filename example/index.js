@@ -5,9 +5,13 @@ CookieRegulation.init(
         website: 'Cookies Regulations',
         privacyPolicy: {
             url: 'https://example.com/privacy',
-            bandeauLabel: 'Politique de confidentialité',
-            modalLabel: 'Consultez notre politique de confidentialité',
+            label: 'Politique de confidentialité',
             openInNewWindow: true,
+        },
+        modal: {
+            header: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras hendrerit, velit vitae accumsan pellentesque, sapien arcu gravida nibh, at accumsan nulla sapien sed magna. Integer sed sem dolor. Pellentesque feugiat, quam quis dapibus vehicula, risus morbi.',
+            relatedCompaniesCount: 5,
+            relatedCompaniesPrivacyPolicyUrl: ''
         },
         services: {
             googleAnalytics: {
