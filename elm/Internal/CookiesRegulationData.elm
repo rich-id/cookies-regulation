@@ -1,4 +1,4 @@
-module Internal.CookiesRegulationData exposing (Configuration, Flags, FlagsConfiguration, Model, Msg(..), PrivacyPolicy, Service, Services, serviceConfigurationDecoder)
+module Internal.CookiesRegulationData exposing (Configuration, Flags, FlagsConfiguration, ModalState(..), Model, Msg(..), PrivacyPolicy, Service, Services, serviceConfigurationDecoder)
 
 import Browser.Dom exposing (Error, Viewport)
 import Dict exposing (Dict)
@@ -28,7 +28,7 @@ type alias FlagsConfiguration =
 
 type alias Model =
     { config : Configuration
-    , modalOpen : Bool
+    , modalState : ModalState
     , modalBodyScrollable : Bool
     }
 
@@ -79,6 +79,7 @@ type ModalState
 
 type Msg
     = MsgOpenModal
+    | MsgFadeCloseModal
     | MsgCloseModal
     | MsgAcceptAll
     | MsgRejectAll

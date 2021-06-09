@@ -3,11 +3,12 @@ module Internal.CookiesRegulationModal exposing (view)
 import Dict exposing (Dict)
 import Html exposing (Attribute, Html, a, b, div, h3, h4, p, text)
 import Html.Attributes exposing (class, href, id, style, tabindex, target)
-import Html.Events exposing (onClick)
+import Html.Events as Events exposing (onClick)
 import Internal.Button as Button
 import Internal.CookiesRegulationData exposing (..)
 import Internal.Helpers exposing (..)
 import Internal.Picto as Picto
+import Json.Decode as Decode
 
 
 view : Model -> Html Msg
@@ -15,8 +16,9 @@ view model =
     div []
         [ div
             [ class "cookies-regulation-modal fade"
-            , class "show" |> attrWhen model.modalOpen
-            , style "height" "0" |> attrWhenNot model.modalOpen
+            , class "show" |> attrWhen (model.modalState == Open)
+            , style "height" "0" |> attrWhen (model.modalState == Close)
+            , Events.on "transitionend" (Decode.succeed MsgCloseModal) |> attrWhen (model.modalState == FaseClose)
             , tabindex -1
             ]
             [ div [ class "cookies-regulation-modal-dialog" ]
@@ -27,7 +29,7 @@ view model =
                     ]
                 ]
             ]
-        , htmlWhen model.modalOpen <|
+        , htmlWhen (model.modalState == Open) <|
             div [ class "cookies-regulation-modal-backdrop" ] []
         ]
 
@@ -40,7 +42,7 @@ modalHeaderView : Html Msg
 modalHeaderView =
     div [ class "cookies-regulation-modal-header" ]
         [ h3 [] [ text "Gérer mes cookies" ]
-        , Picto.close [ onClick MsgCloseModal ]
+        , Picto.close [ onClick MsgFadeCloseModal ]
         ]
 
 

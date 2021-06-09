@@ -136,10 +136,6 @@
         pointer-events: none;
     }
 
-    &.fade .cookies-regulation-modal-dialog {
-        transition: transform .3s ease-out;
-        transform: translate(0, -50px);
-    }
     &.show .cookies-regulation-modal-dialog {
         transform: none;
     }
@@ -150,6 +146,8 @@
         max-width: 750px;
         pointer-events: none;
         position: relative;
+        transform: translate(0, -50px);
+        transition: transform .3s ease-out;
         width: auto;
 
         .cookies-regulation-modal-content {
@@ -164,7 +162,7 @@
             max-height: 100%;
             outline: 0;
             overflow: hidden;
-            padding: 24px;
+            padding: 0 24px;
             pointer-events: auto;
             position: relative;
             width: auto;
@@ -172,14 +170,15 @@
             .cookies-regulation-modal-header {
                 color: var(--rich-id-cookies-regulation-secondary);
                 font-weight: bold;
+                padding-top: 24px;
+                position: relative;
                 text-align: center;
                 text-transform: uppercase;
-                position: relative;
 
                 svg {
                     position: absolute;
                     right: 0;
-                    top: 0;
+                    top: 24px;
                 }
             }
 
@@ -237,6 +236,7 @@
 
             .cookies-regulation-modal-footer {
                 text-align: center;
+                padding-bottom: 24px;
             }
         }
     }

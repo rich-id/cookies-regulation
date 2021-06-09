@@ -1,4 +1,4 @@
-module Internal.Helpers exposing (attrWhen, attrWhenNot, htmlWhen, htmlWhenNot, htmlWhenNotEmpty, relatedCompaniesLabel)
+module Internal.Helpers exposing (attrWhen, htmlWhen, htmlWhenNot, htmlWhenNotEmpty, relatedCompaniesLabel)
 
 import Html exposing (Attribute, Html, a, text)
 import Html.Attributes exposing (class, href)
@@ -12,11 +12,6 @@ attrWhen predicate attr =
 
     else
         class ""
-
-
-attrWhenNot : Bool -> Attribute msg -> Attribute msg
-attrWhenNot predicate =
-    attrWhen (not predicate)
 
 
 htmlWhen : Bool -> Html msg -> Html msg

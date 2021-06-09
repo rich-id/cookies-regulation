@@ -41,7 +41,7 @@ init flags =
             , modal = flags.config.modal
             , services = services
             }
-      , modalOpen = False
+      , modalState = Close
       , modalBodyScrollable = False
       }
     , Cmd.none
@@ -56,10 +56,13 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         MsgOpenModal ->
-            ( { model | modalOpen = True, modalBodyScrollable = False }, modalBodySizeCmd )
+            ( { model | modalState = Open, modalBodyScrollable = False }, modalBodySizeCmd )
+
+        MsgFadeCloseModal ->
+            ( { model | modalState = FaseClose }, Cmd.none )
 
         MsgCloseModal ->
-            ( { model | modalOpen = False, modalBodyScrollable = False }, Cmd.none )
+            ( { model | modalState = Close, modalBodyScrollable = False }, Cmd.none )
 
         MsgAcceptAll ->
             ( model, Cmd.none )
@@ -76,7 +79,7 @@ update msg model =
         MsgModalContentSize result ->
             case result of
                 Ok result_ ->
-                    ( { model | modalBodyScrollable = model.modalOpen && result_.viewport.height < result_.scene.height }, Cmd.none )
+                    ( { model | modalBodyScrollable = model.modalState == Open && result_.viewport.height < result_.scene.height }, Cmd.none )
 
                 _ ->
                     ( model, Cmd.none )
