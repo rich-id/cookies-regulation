@@ -63,15 +63,13 @@ modalBodyView model =
         , class "cookies-regulation-modal-body-scrollable" |> attrWhen model.modalBodyScrollable
         ]
         [ div [ class "cookies-regulation-modal-body-content" ]
-            [ p [] [ text model.config.modal.header ]
-            , relatedCompaniesView model
-            , cookieDuration
-            , a
-                [ class "cookies-regulation-privacy-policy"
-                , href model.config.privacyPolicy.url
-                , target "_blank" |> attrWhen model.config.privacyPolicy.openInNewWindow
+            [ div [ class "cookies-regulation-modal-body-content-top" ]
+                [ p [ class "cookies-regulation-modal-body-content-header" ] [ text model.config.modal.header ]
+                , relatedCompaniesView model
+                , cookieDurationView
+                , privacyPolicyLinkView model
+                , globalActionButtonsView
                 ]
-                [ text model.config.privacyPolicy.label ]
             , servicesListView "Cookies nécessitant votre consentement" mandatoryServices
             , servicesListView "Cookies exemptés de consentement" notMandatoryServices
             ]
@@ -93,7 +91,7 @@ servicesListView title_ services =
                 |> Dict.map (\_ service -> serviceView service)
                 |> Dict.values
     in
-    div []
+    div [ class "cookies-regulation-services" ]
         ([ h4 [] [ text title_ ]
          ]
             ++ servicesView
@@ -129,12 +127,30 @@ relatedCompaniesView model =
         ]
 
 
-cookieDuration : Html msg
-cookieDuration =
+cookieDurationView : Html msg
+cookieDurationView =
     div [ class "cookies-regulation-information" ]
         [ Picto.clock
         , div []
             [ div [] [ text "Nous conservons vos choix pendant 6 mois." ]
             , div [] [ text "Vous pouvez changer d’avis à tout moment en cliquant sur le bouton « Cookies » au bas du site." ]
             ]
+        ]
+
+
+privacyPolicyLinkView : Model -> Html msg
+privacyPolicyLinkView model =
+    a
+        [ class "cookies-regulation-privacy-policy"
+        , href model.config.privacyPolicy.url
+        , target "_blank" |> attrWhen model.config.privacyPolicy.openInNewWindow
+        ]
+        [ text model.config.privacyPolicy.label ]
+
+
+globalActionButtonsView : Html Msg
+globalActionButtonsView =
+    div [ class "cookies-regulation-modal-body-content-actions" ]
+        [ Button.view { label = "Tout accepter", type_ = Button.Primary, msg = MsgModalAcceptAll }
+        , Button.view { label = "Tout refuser", type_ = Button.Primary, msg = MsgModalRejectAll }
         ]

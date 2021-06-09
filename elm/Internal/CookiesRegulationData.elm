@@ -92,8 +92,10 @@ type Msg
     | MsgOpenModal
     | MsgFadeCloseModal
     | MsgCloseModal
-    | MsgAcceptAll
-    | MsgRejectAll
+    | MsgBandeauAcceptAll
+    | MsgBandeauRejectAll
+    | MsgModalAcceptAll
+    | MsgModalRejectAll
     | MsgSave
     | MsgResize Int Int
     | MsgModalContentSize (Result Error Viewport)

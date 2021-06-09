@@ -17,14 +17,16 @@ view model =
             , class "show" |> attrWhen (model.bandeauState == BandeauOpened)
             , Events.on "transitionend" (Decode.succeed MsgCloseBandeau) |> attrWhen (model.bandeauState == BandeauFadeClose)
             ]
-            [ span [ class "cookies-regulation-description" ] [ text "Contrôlez les cookies que nous utilisons pour ce site..." ]
-            , Button.view { label = "Personnaliser", type_ = Button.Secondary, msg = MsgOpenModal }
-            , Button.view { label = "Tout accepter", type_ = Button.Primary, msg = MsgFadeCloseBandeau }
-            , Button.view { label = "Tout refuser", type_ = Button.Primary, msg = MsgRejectAll }
-            , a
-                [ class "cookies-regulation-privacy-policy"
-                , href model.config.privacyPolicy.url
-                , target "_blank" |> attrWhen model.config.privacyPolicy.openInNewWindow
+            [ div [ class "cookies-regulation-bandeau-contents" ]
+                [ span [ class "cookies-regulation-description" ] [ text "Contrôlez les cookies que nous utilisons pour ce site..." ]
+                , Button.view { label = "Personnaliser", type_ = Button.Secondary, msg = MsgOpenModal }
+                , Button.view { label = "Tout accepter", type_ = Button.Primary, msg = MsgFadeCloseBandeau }
+                , Button.view { label = "Tout refuser", type_ = Button.Primary, msg = MsgBandeauRejectAll }
+                , a
+                    [ class "cookies-regulation-privacy-policy"
+                    , href model.config.privacyPolicy.url
+                    , target "_blank" |> attrWhen model.config.privacyPolicy.openInNewWindow
+                    ]
+                    [ text model.config.privacyPolicy.label ]
                 ]
-                [ text model.config.privacyPolicy.label ]
             ]

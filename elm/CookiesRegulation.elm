@@ -88,10 +88,16 @@ update msg model =
         MsgCloseModal ->
             ( { model | modalState = ModalClosed, modalBodyScrollable = False }, Cmd.none )
 
-        MsgAcceptAll ->
+        MsgBandeauAcceptAll ->
             ( model, Cmd.none )
 
-        MsgRejectAll ->
+        MsgBandeauRejectAll ->
+            ( model, Cmd.none )
+
+        MsgModalAcceptAll ->
+            ( model, Cmd.none )
+
+        MsgModalRejectAll ->
             ( model, Cmd.none )
 
         MsgSave ->

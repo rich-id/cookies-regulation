@@ -3,6 +3,8 @@
     --rich-id-cookies-regulation-primary-variant: #c20069;
     --rich-id-cookies-regulation-secondary: #2B2468;
     --rich-id-cookies-regulation-modal-backdrop: #FFFFFF;
+
+    --rich-id-cookies-regulation-bandeau-animation-duration: .6s;
 }
 
 #rich-id-cookies-regulation h3,
@@ -20,6 +22,16 @@
 
 #rich-id-cookies-regulation h4 {
     padding-bottom: 16px;
+}
+
+#rich-id-cookies-regulation a {
+    color: #000000;
+    text-decoration: underline;
+
+    &:hover {
+        cursor: pointer;
+        text-decoration: none;
+    }
 }
 
 #rich-id-cookies-regulation {
@@ -59,13 +71,10 @@
     .cookies-regulation-bandeau {
         background: var(--rich-id-cookies-regulation-secondary);
         bottom: 0;
-        display: flex;
-        flex-direction: column;
         left: 0;
-        padding: 8px 32px;
         position: fixed;
         text-align: center;
-        transition: opacity .5s linear, transform .5s ease-out;
+        transition: opacity var(--rich-id-cookies-regulation-bandeau-animation-duration) linear, transform var(--rich-id-cookies-regulation-bandeau-animation-duration) ease-out;
         transform: translate(0, 50px);
         width: 100%;
         z-index: 2147483644;
@@ -79,51 +88,57 @@
             transform: none;
         }
 
-        span.cookies-regulation-description {
-            padding-bottom: 8px;
-            padding-top: 8px;
-        }
+        .cookies-regulation-bandeau-contents {
+            display: flex;
+            flex-direction: column;
+            padding: 8px 32px;
 
-        a.cookies-regulation-privacy-policy {
-            color: #FFFFFF;
-            padding-bottom: 8px;
-            padding-top: 8px;
-            text-decoration: underline;
-
-            &:hover {
-                color: #FFFFFF;
-                cursor: pointer;
-                text-decoration: none;
+            span.cookies-regulation-description {
+                padding-bottom: 8px;
+                padding-top: 8px;
             }
-        }
-
-        @media(min-width: 480px) {
-            flex-direction: row;
-            flex-wrap: wrap;
-            justify-content: center;
-
-            span.cookies-regulation-description, a.cookies-regulation-privacy-policy {
-                flex-basis: 100%;
-            }
-
-            button:not(:last-child) {
-                margin-left: 16px;
-            }
-        }
-
-        @media(min-width: 768px) {
-            align-items: center;
 
             a.cookies-regulation-privacy-policy {
-                flex-basis: initial;
-                margin-left: 24px;
-            }
-        }
+                color: #FFFFFF;
+                padding-bottom: 8px;
+                padding-top: 8px;
+                text-decoration: underline;
 
-        @media(min-width: 1200px) {
-            span.cookies-regulation-description {
-                flex-basis: initial;
-                margin-right: 24px;
+                &:hover {
+                    color: #FFFFFF;
+                    cursor: pointer;
+                    text-decoration: none;
+                }
+            }
+
+            @media(min-width: 480px) {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+
+                span.cookies-regulation-description, a.cookies-regulation-privacy-policy {
+                    flex-basis: 100%;
+                }
+
+                button:not(:last-child) {
+                    margin-left: 16px;
+                }
+            }
+
+            @media(min-width: 768px) {
+                align-items: center;
+
+                a.cookies-regulation-privacy-policy {
+                    flex-basis: initial;
+                    margin-left: 24px;
+                }
+            }
+
+            @media(min-width: 1200px) {
+                span.cookies-regulation-description {
+                    flex-basis: initial;
+                    margin-right: 24px;
+                }
             }
         }
     }
@@ -152,14 +167,24 @@
     }
 
     .cookies-regulation-modal-dialog {
-        height: calc(100% - 124px);
-        margin: 62px auto;
-        max-width: 750px;
+        height: 100%;
+        margin: 0 auto;
+        max-width: 100%;
         pointer-events: none;
         position: relative;
         transform: translate(0, -50px);
         transition: transform .3s ease-out;
         width: auto;
+
+        @media(min-width: 768px) {
+            height: calc(100% - 124px);
+            margin: 62px auto;
+            max-width: 570px;
+        }
+
+        @media(min-width: 1024px) {
+            max-width: 750px;
+        }
 
         .cookies-regulation-modal-content {
             background-clip: padding-box;
@@ -181,6 +206,7 @@
             .cookies-regulation-modal-header {
                 color: var(--rich-id-cookies-regulation-secondary);
                 font-weight: bold;
+                padding-bottom: 16px;
                 padding-top: 24px;
                 position: relative;
                 text-align: center;
@@ -208,6 +234,7 @@
                     svg {
                         margin-right: 16px;
                         margin-top: 3px;
+                        min-width: 16px;
                     }
 
                     a {
@@ -218,6 +245,26 @@
 
             .cookies-regulation-modal-body-content {
                 padding: 0 10px;
+
+                .cookies-regulation-modal-body-content-top {
+                    padding-bottom: 16px;
+                }
+
+                .cookies-regulation-modal-body-content-actions {
+                    padding-top: 32px;
+
+                    button + button {
+                        margin-left: 24px;
+                    }
+                }
+
+                .cookies-regulation-modal-body-content-header {
+                    margin: 8px 0 16px 0;
+                }
+
+                .cookies-regulation-services + .cookies-regulation-services {
+                    margin-top: 24px;
+                }
 
                 .cookies-regulation-service {
                     display: flex;
@@ -246,8 +293,9 @@
             }
 
             .cookies-regulation-modal-footer {
+                padding-bottom: 16px;
+                padding-top: 16px;
                 text-align: center;
-                padding-bottom: 24px;
             }
         }
     }
