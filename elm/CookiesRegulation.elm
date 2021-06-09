@@ -19,8 +19,22 @@ main =
         { init = init
         , view = view
         , update = update
-        , subscriptions = \_ -> onResize MsgResize
+        , subscriptions = subscriptions
         }
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    let
+        bandeauStateSub =
+            case model.bandeauState of
+                BandeauNeedOpen ->
+                    Browser.Events.onAnimationFrame (\_ -> MsgOpenBandeau)
+
+                _ ->
+                    Sub.none
+    in
+    Sub.batch [ onResize MsgResize, bandeauStateSub ]
 
 
 
@@ -41,7 +55,8 @@ init flags =
             , modal = flags.config.modal
             , services = services
             }
-      , modalState = Close
+      , bandeauState = BandeauNeedOpen
+      , modalState = ModalClosed
       , modalBodyScrollable = False
       }
     , Cmd.none
@@ -55,14 +70,23 @@ init flags =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        MsgOpenBandeau ->
+            ( { model | bandeauState = BandeauOpened }, Cmd.none )
+
+        MsgFadeCloseBandeau ->
+            ( { model | bandeauState = BandeauFadeClose }, Cmd.none )
+
+        MsgCloseBandeau ->
+            ( { model | bandeauState = BandeauClosed }, Cmd.none )
+
         MsgOpenModal ->
-            ( { model | modalState = Open, modalBodyScrollable = False }, modalBodySizeCmd )
+            ( { model | modalState = ModalOpened, modalBodyScrollable = False }, modalBodySizeCmd )
 
         MsgFadeCloseModal ->
-            ( { model | modalState = FaseClose }, Cmd.none )
+            ( { model | modalState = ModalFadeClose }, Cmd.none )
 
         MsgCloseModal ->
-            ( { model | modalState = Close, modalBodyScrollable = False }, Cmd.none )
+            ( { model | modalState = ModalClosed, modalBodyScrollable = False }, Cmd.none )
 
         MsgAcceptAll ->
             ( model, Cmd.none )
@@ -79,7 +103,7 @@ update msg model =
         MsgModalContentSize result ->
             case result of
                 Ok result_ ->
-                    ( { model | modalBodyScrollable = model.modalState == Open && result_.viewport.height < result_.scene.height }, Cmd.none )
+                    ( { model | modalBodyScrollable = model.modalState == ModalOpened && result_.viewport.height < result_.scene.height }, Cmd.none )
 
                 _ ->
                     ( model, Cmd.none )

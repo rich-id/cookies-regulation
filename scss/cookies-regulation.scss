@@ -65,8 +65,19 @@
         padding: 8px 32px;
         position: fixed;
         text-align: center;
+        transition: opacity .5s linear, transform .5s ease-out;
+        transform: translate(0, 50px);
         width: 100%;
         z-index: 2147483644;
+
+        &:not(.show) {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        &.show {
+            transform: none;
+        }
 
         span.cookies-regulation-description {
             padding-bottom: 8px;

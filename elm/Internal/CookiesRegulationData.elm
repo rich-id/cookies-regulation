@@ -1,4 +1,4 @@
-module Internal.CookiesRegulationData exposing (Configuration, Flags, FlagsConfiguration, ModalState(..), Model, Msg(..), PrivacyPolicy, Service, Services, serviceConfigurationDecoder)
+module Internal.CookiesRegulationData exposing (BandeauState(..), Configuration, Flags, FlagsConfiguration, ModalState(..), Model, Msg(..), PrivacyPolicy, Service, Services, serviceConfigurationDecoder)
 
 import Browser.Dom exposing (Error, Viewport)
 import Dict exposing (Dict)
@@ -28,6 +28,7 @@ type alias FlagsConfiguration =
 
 type alias Model =
     { config : Configuration
+    , bandeauState : BandeauState
     , modalState : ModalState
     , modalBodyScrollable : Bool
     }
@@ -68,9 +69,16 @@ type alias Services =
 
 
 type ModalState
-    = Close
-    | Open
-    | FaseClose
+    = ModalClosed
+    | ModalOpened
+    | ModalFadeClose
+
+
+type BandeauState
+    = BandeauNeedOpen
+    | BandeauOpened
+    | BandeauFadeClose
+    | BandeauClosed
 
 
 
@@ -78,7 +86,10 @@ type ModalState
 
 
 type Msg
-    = MsgOpenModal
+    = MsgOpenBandeau
+    | MsgFadeCloseBandeau
+    | MsgCloseBandeau
+    | MsgOpenModal
     | MsgFadeCloseModal
     | MsgCloseModal
     | MsgAcceptAll

@@ -16,9 +16,9 @@ view model =
     div []
         [ div
             [ class "cookies-regulation-modal fade"
-            , class "show" |> attrWhen (model.modalState == Open)
-            , style "height" "0" |> attrWhen (model.modalState == Close)
-            , Events.on "transitionend" (Decode.succeed MsgCloseModal) |> attrWhen (model.modalState == FaseClose)
+            , class "show" |> attrWhen (model.modalState == ModalOpened)
+            , style "height" "0" |> attrWhen (model.modalState == ModalClosed)
+            , Events.on "transitionend" (Decode.succeed MsgCloseModal) |> attrWhen (model.modalState == ModalFadeClose)
             , tabindex -1
             ]
             [ div [ class "cookies-regulation-modal-dialog" ]
@@ -29,7 +29,7 @@ view model =
                     ]
                 ]
             ]
-        , htmlWhen (model.modalState == Open) <|
+        , htmlWhen (model.modalState == ModalOpened) <|
             div [ class "cookies-regulation-modal-backdrop" ] []
         ]
 
