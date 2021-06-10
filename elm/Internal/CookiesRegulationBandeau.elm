@@ -24,9 +24,9 @@ view model =
                 , Button.view { label = "Tout refuser", type_ = Button.Primary, msg = MsgBandeauRejectAll }
                 , a
                     [ class "cookies-regulation-privacy-policy"
-                    , href model.config.privacyPolicy.url
-                    , target "_blank" |> attrWhen model.config.privacyPolicy.openInNewWindow
+                    , href model.privacyPolicy.url
+                    , target "_blank" |> attrWhen model.privacyPolicy.openInNewWindow
                     ]
-                    [ text model.config.privacyPolicy.label ]
+                    [ text model.privacyPolicy.label ]
                 ]
             ]

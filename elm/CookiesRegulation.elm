@@ -1,4 +1,4 @@
-module CookiesRegulation exposing (main)
+port module CookiesRegulation exposing (main)
 
 import Browser
 import Browser.Dom exposing (Error, Viewport, getViewportOf)
@@ -11,6 +11,15 @@ import Internal.CookiesRegulationData exposing (..)
 import Internal.CookiesRegulationModal as CookiesRegulationModal
 import Json.Decode as Decode
 import Task
+
+
+port modalOpened : () -> Cmd msg
+
+
+port modalClosed : () -> Cmd msg
+
+
+port openModal : (() -> msg) -> Sub msg
 
 
 main : Program Flags Model Msg
@@ -34,7 +43,7 @@ subscriptions model =
                 _ ->
                     Sub.none
     in
-    Sub.batch [ onResize MsgResize, bandeauStateSub ]
+    Sub.batch [ onResize MsgResize, bandeauStateSub, openModal (\_ -> MsgOpenModal) ]
 
 
 
@@ -45,22 +54,37 @@ init : Flags -> ( Model, Cmd Msg )
 init flags =
     let
         services =
-            flags.config.services
-                |> Decode.decodeValue (Decode.dict serviceConfigurationDecoder)
-                |> Result.withDefault Dict.empty
+            decodeServices flags.config.services
     in
-    ( { config =
-            { website = flags.config.website
-            , privacyPolicy = flags.config.privacyPolicy
-            , modal = flags.config.modal
-            , services = services
-            }
+    ( { website = flags.config.website
+      , modal = flags.config.modal
+      , privacyPolicy = flags.config.privacyPolicy
+      , mandatoryServices = filterMandatoryServices services
+      , notMandatoryServices = filterNotMandatoryServices services
+      , preferences = Nothing
       , bandeauState = BandeauNeedOpen
       , modalState = ModalClosed
       , modalBodyScrollable = False
       }
     , Cmd.none
     )
+
+
+decodeServices : Decode.Value -> Services
+decodeServices json =
+    json
+        |> Decode.decodeValue (Decode.dict serviceConfigurationDecoder)
+        |> Result.withDefault Dict.empty
+
+
+filterMandatoryServices : Services -> Services
+filterMandatoryServices services =
+    Dict.filter (\_ service -> service.mandatory) services
+
+
+filterNotMandatoryServices : Services -> Services
+filterNotMandatoryServices services =
+    Dict.filter (\_ service -> not service.mandatory) services
 
 
 
@@ -80,13 +104,13 @@ update msg model =
             ( { model | bandeauState = BandeauClosed }, Cmd.none )
 
         MsgOpenModal ->
-            ( { model | modalState = ModalOpened, modalBodyScrollable = False }, modalBodySizeCmd )
+            ( { model | modalState = ModalOpened, modalBodyScrollable = False }, Cmd.batch [ modalOpened (), modalBodySizeCmd ] )
 
         MsgFadeCloseModal ->
             ( { model | modalState = ModalFadeClose }, Cmd.none )
 
         MsgCloseModal ->
-            ( { model | modalState = ModalClosed, modalBodyScrollable = False }, Cmd.none )
+            ( { model | modalState = ModalClosed, modalBodyScrollable = False }, modalClosed () )
 
         MsgBandeauAcceptAll ->
             ( model, Cmd.none )
@@ -99,6 +123,16 @@ update msg model =
 
         MsgModalRejectAll ->
             ( model, Cmd.none )
+
+        MsgUpdateServiceStatus serviceId ->
+            ( { model
+                | mandatoryServices =
+                    updateService model.mandatoryServices
+                        serviceId
+                        (\service -> { service | enabled = not service.enabled })
+              }
+            , Cmd.none
+            )
 
         MsgSave ->
             ( model, Cmd.none )
@@ -118,6 +152,19 @@ update msg model =
 modalBodySizeCmd : Cmd Msg
 modalBodySizeCmd =
     Task.attempt MsgModalContentSize (getViewportOf "cookies-regulation-modal-body")
+
+
+updateService : Services -> String -> (Service -> Service) -> Services
+updateService services serviceId updater =
+    services
+        |> Dict.map
+            (\key service ->
+                if key == serviceId then
+                    updater service
+
+                else
+                    service
+            )
 
 
 

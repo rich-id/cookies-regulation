@@ -1,5 +1,19 @@
 window.Elm = require('./../elm/CookiesRegulation.elm').Elm;
 
+window.getReferencesCookie = function () {
+    var cookieArr = document.cookie.split(";");
+
+    for(var i = 0; i < cookieArr.length; i++) {
+        var cookiePair = cookieArr[i].split("=");
+
+        if (cookiePair[0].trim() === 'cookie_preferences' ) {
+            return decodeURIComponent(cookiePair[1]);
+        }
+    }
+
+    return null;
+};
+
 module.exports = {
     init: function (config) {
         window.cookiesRegulationConfig = config;
@@ -13,6 +27,19 @@ module.exports = {
                 config: config
             },
         });
+
+        window.cookiesRegulationBlock.ports.modalOpened.subscribe(
+            function () {
+                document.querySelector('body').classList.add('cookies-regulation-modal-open');
+            }
+        );
+
+        window.cookiesRegulationBlock.ports.modalClosed.subscribe(
+            function () {
+                document.querySelector('body').classList.remove('cookies-regulation-modal-open');
+            }
+        );
+
         //
         // window.cookiesRegulationBlock.ports.initializeService.subscribe(this.initializeService);
         // window.cookiesRegulationBlock.ports.setPreferences.subscribe(this.setPreferences);
@@ -50,7 +77,7 @@ module.exports = {
     },
 
     openModal: function () {
-        window.cookiesRegulationBlock.ports.openModal.send();
+        window.cookiesRegulationBlock.ports.openModal.send(null);
     },
 
     setPreferences: function(preferences) {
@@ -59,6 +86,7 @@ module.exports = {
     },
 
     getPreferences: function() {
-
+        var cookie = window.getReferencesCookie();
+        console.log(cookie);
     }
 }

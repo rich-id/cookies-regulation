@@ -4,7 +4,15 @@
     --rich-id-cookies-regulation-secondary: #2B2468;
     --rich-id-cookies-regulation-modal-backdrop: #FFFFFF;
 
+
+    --rich-id-cookies-regulation-error: #DC3545;
+    --rich-id-cookies-regulation-success: #198754;
+
     --rich-id-cookies-regulation-bandeau-animation-duration: .6s;
+}
+
+.cookies-regulation-modal-open {
+    overflow: hidden;
 }
 
 #rich-id-cookies-regulation h3,
@@ -271,7 +279,7 @@
                     padding-bottom: 16px;
 
                     .cookies-regulation-service-status {
-                        width: 56px;
+                        min-width: 56px;
                     }
 
                     .cookies-regulation-service-description {
@@ -335,4 +343,51 @@
 
 #cookies-regulation-share-icon {
     fill: var(--rich-id-cookies-regulation-secondary);
+}
+
+.cookies-regulation-switch-checkbox-container {
+    display: flex;
+    padding-top: 2px;
+
+    .cookies-regulation-switch-checkbox-input-container {
+        position: relative;
+
+        .cookies-regulation-switch-checkbox-rounded {
+            background: #FFFFFF;
+            border-radius: 50%;
+            content: "";
+            height: 18px;
+            left: 3px;
+            position: absolute;
+            top: 3px;
+            transition: left .15s linear;
+            width: 18px;
+        }
+
+        input.cookies-regulation-switch-checkbox {
+            -webkit-appearance: none !important;
+            background-color: var(--rich-id-cookies-regulation-error);
+            box-shadow: inset 20px 0 0 0 var(--rich-id-cookies-regulation-error);
+            border: 1px solid var(--rich-id-cookies-regulation-error);
+            border-radius: 50px;
+            height: 24px;
+            margin: 0;
+            min-width: 36px;
+            outline: none !important;
+            width: 36px;
+
+            &:checked {
+                background-color: var(--rich-id-cookies-regulation-success);
+                box-shadow: inset 20px 0 0 0 var(--rich-id-cookies-regulation-success);
+                border: 1px solid var(--rich-id-cookies-regulation-success);
+            }
+        }
+    }
+
+    &.cookies-regulation-switch-checkbox-container-checked {
+        .cookies-regulation-switch-checkbox-rounded {
+            left: 15px;
+            background-color: #FFFFFF;
+        }
+    }
 }

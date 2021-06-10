@@ -1,4 +1,4 @@
-module Internal.CookiesRegulationData exposing (BandeauState(..), Configuration, Flags, FlagsConfiguration, ModalState(..), Model, Msg(..), PrivacyPolicy, Service, Services, serviceConfigurationDecoder)
+module Internal.CookiesRegulationData exposing (BandeauState(..), Flags, FlagsConfiguration, ModalState(..), Model, Msg(..), PrivacyPolicy, Service, Services, serviceConfigurationDecoder)
 
 import Browser.Dom exposing (Error, Viewport)
 import Dict exposing (Dict)
@@ -27,18 +27,15 @@ type alias FlagsConfiguration =
 
 
 type alias Model =
-    { config : Configuration
+    { website : String
+    , modal : ModalConfiguration
+    , privacyPolicy : PrivacyPolicy
+    , mandatoryServices : Services
+    , notMandatoryServices : Services
+    , preferences : Maybe (Dict String Bool)
     , bandeauState : BandeauState
     , modalState : ModalState
     , modalBodyScrollable : Bool
-    }
-
-
-type alias Configuration =
-    { website : String
-    , privacyPolicy : PrivacyPolicy
-    , modal : ModalConfiguration
-    , services : Services
     }
 
 
@@ -61,6 +58,7 @@ type alias Service =
     , description : Maybe String
     , conservation : String
     , mandatory : Bool
+    , enabled : Bool
     }
 
 
@@ -96,6 +94,7 @@ type Msg
     | MsgBandeauRejectAll
     | MsgModalAcceptAll
     | MsgModalRejectAll
+    | MsgUpdateServiceStatus String
     | MsgSave
     | MsgResize Int Int
     | MsgModalContentSize (Result Error Viewport)
@@ -112,3 +111,4 @@ serviceConfigurationDecoder =
         |> Decode.required "description" (Decode.nullable Decode.string)
         |> Decode.required "conservation" Decode.string
         |> Decode.required "mandatory" Decode.bool
+        |> Decode.hardcoded False

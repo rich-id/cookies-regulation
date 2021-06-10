@@ -2,7 +2,7 @@ window.CookieRegulation = require('../js/cookies-regulation');
 
 CookieRegulation.init(
     {
-        website: 'Cookies Regulations',
+        website: 'Cookies Regulation',
         privacyPolicy: {
             url: 'https://example.com/privacy',
             label: 'Politique de confidentialité',

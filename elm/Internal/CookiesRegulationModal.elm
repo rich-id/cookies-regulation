@@ -1,13 +1,14 @@
 module Internal.CookiesRegulationModal exposing (view)
 
 import Dict exposing (Dict)
-import Html exposing (Attribute, Html, a, b, div, h3, h4, p, text)
+import Html exposing (Attribute, Html, a, b, div, h3, h4, p, span, text)
 import Html.Attributes exposing (class, href, id, style, tabindex, target)
 import Html.Events as Events exposing (onClick)
 import Internal.Button as Button
 import Internal.CookiesRegulationData exposing (..)
 import Internal.Helpers exposing (..)
 import Internal.Picto as Picto
+import Internal.SwitchCheckbox as SwitchCheckbox
 import Json.Decode as Decode
 
 
@@ -48,15 +49,6 @@ modalHeaderView =
 
 modalBodyView : Model -> Html Msg
 modalBodyView model =
-    let
-        mandatoryServices =
-            model.config.services
-                |> Dict.filter (\_ service -> service.mandatory)
-
-        notMandatoryServices =
-            model.config.services
-                |> Dict.filter (\_ service -> not service.mandatory)
-    in
     div
         [ id "cookies-regulation-modal-body"
         , class "cookies-regulation-modal-body"
@@ -64,14 +56,14 @@ modalBodyView model =
         ]
         [ div [ class "cookies-regulation-modal-body-content" ]
             [ div [ class "cookies-regulation-modal-body-content-top" ]
-                [ p [ class "cookies-regulation-modal-body-content-header" ] [ text model.config.modal.header ]
+                [ p [ class "cookies-regulation-modal-body-content-header" ] [ text model.modal.header ]
                 , relatedCompaniesView model
                 , cookieDurationView
                 , privacyPolicyLinkView model
                 , globalActionButtonsView
                 ]
-            , servicesListView "Cookies nécessitant votre consentement" mandatoryServices
-            , servicesListView "Cookies exemptés de consentement" notMandatoryServices
+            , servicesListView "Cookies nécessitant votre consentement" model.mandatoryServices
+            , servicesListView "Cookies exemptés de consentement" model.notMandatoryServices
             ]
         ]
 
@@ -88,7 +80,7 @@ servicesListView title_ services =
     let
         servicesView =
             services
-                |> Dict.map (\_ service -> serviceView service)
+                |> Dict.map (\serviceId service -> serviceView serviceId service)
                 |> Dict.values
     in
     div [ class "cookies-regulation-services" ]
@@ -98,22 +90,28 @@ servicesListView title_ services =
         )
 
 
-serviceView : Service -> Html Msg
-serviceView serviceConfiguration =
+serviceView : String -> Service -> Html Msg
+serviceView serviceId service =
     let
         description =
-            Maybe.withDefault "" serviceConfiguration.description
+            Maybe.withDefault "" service.description
     in
     div [ class "cookies-regulation-service" ]
         [ div [ class "cookies-regulation-service-status" ]
-            [ Picto.padlock |> htmlWhenNot serviceConfiguration.mandatory
+            [ htmlWhenNot service.mandatory <| Picto.padlock
+            , htmlWhen service.mandatory <|
+                SwitchCheckbox.view
+                    { id = serviceId
+                    , isChecked = service.enabled
+                    , msg_ = MsgUpdateServiceStatus serviceId
+                    }
             ]
         , div []
-            [ div [] [ text serviceConfiguration.name ]
+            [ div [] [ span [ onClick (MsgUpdateServiceStatus serviceId) |> attrWhen service.mandatory ] [ text service.name ] ]
             , htmlWhenNotEmpty description (\message -> div [ class "cookies-regulation-service-description" ] [ text message ])
             , div [ class "cookies-regulation-service-conservation" ]
                 [ b [] [ text "Conservation :" ]
-                , text serviceConfiguration.conservation
+                , text service.conservation
                 ]
             ]
         ]
@@ -142,10 +140,10 @@ privacyPolicyLinkView : Model -> Html msg
 privacyPolicyLinkView model =
     a
         [ class "cookies-regulation-privacy-policy"
-        , href model.config.privacyPolicy.url
-        , target "_blank" |> attrWhen model.config.privacyPolicy.openInNewWindow
+        , href model.privacyPolicy.url
+        , target "_blank" |> attrWhen model.privacyPolicy.openInNewWindow
         ]
-        [ text model.config.privacyPolicy.label ]
+        [ text model.privacyPolicy.label ]
 
 
 globalActionButtonsView : Html Msg

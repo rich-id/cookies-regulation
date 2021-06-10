@@ -41,24 +41,24 @@ relatedCompaniesLabel : Model -> List (Html msg)
 relatedCompaniesLabel model =
     let
         nbCompanies =
-            if model.config.modal.relatedCompaniesCount < 0 then
+            if model.modal.relatedCompaniesCount < 0 then
                 0
 
             else
-                model.config.modal.relatedCompaniesCount
+                model.modal.relatedCompaniesCount
     in
     case nbCompanies of
         0 ->
-            [ a [ href model.config.modal.relatedCompaniesPrivacyPolicyUrl ] [ text "Aucune société tierce" ]
-            , text ("n’utilise des cookies sur " ++ model.config.website)
+            [ a [ href model.modal.relatedCompaniesPrivacyPolicyUrl ] [ text "Aucune société tierce" ]
+            , text ("n’utilise des cookies sur " ++ model.website)
             ]
 
         1 ->
-            [ a [ href model.config.modal.relatedCompaniesPrivacyPolicyUrl ] [ text "Une société tierce" ]
-            , text ("utilise un/des cookie/s sur " ++ model.config.website)
+            [ a [ href model.modal.relatedCompaniesPrivacyPolicyUrl ] [ text "Une société tierce" ]
+            , text ("utilise un/des cookie/s sur " ++ model.website)
             ]
 
         _ ->
-            [ a [ href model.config.modal.relatedCompaniesPrivacyPolicyUrl ] [ text (String.fromInt nbCompanies ++ " sociétés tierces") ]
-            , text ("utilisent des cookies sur " ++ model.config.website)
+            [ a [ href model.modal.relatedCompaniesPrivacyPolicyUrl ] [ text (String.fromInt nbCompanies ++ " sociétés tierces") ]
+            , text ("utilisent des cookies sur " ++ model.website)
             ]
