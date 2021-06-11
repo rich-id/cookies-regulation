@@ -1,6 +1,6 @@
-require('./cookies-regulation-services');
-
-window.CookiesRegulationElm = require('./../elm/CookiesRegulation.elm').Elm.CookiesRegulation;
+import './cookies-regulation-services';
+import './../scss/cookies-regulation.scss';
+import { Elm } from './../elm/CookiesRegulation.elm';
 
 module.exports = {
     init: function (config) {
@@ -11,7 +11,7 @@ module.exports = {
 
         const references = this.getPreferences();
 
-        window.cookiesRegulationBlock = window.CookiesRegulationElm.init({
+        window.cookiesRegulationBlock = Elm.CookiesRegulation.init({
             node: container,
             flags: {
                 preferences: references,
@@ -137,7 +137,7 @@ var decodeCookiePreferencesData = function (encodedPreferences) {
 };
 
 var buildAndStoreConfiguration = function (config) {
-    for (serviceId in config.services) {
+    for (var serviceId in config.services) {
         let service = config.services[serviceId].service;
         var options = config.services[serviceId].options ?? {};
 
@@ -145,7 +145,7 @@ var buildAndStoreConfiguration = function (config) {
             continue;
         }
 
-        if (typeof window.cookieRegulationServices[service] === 'undefined') {
+        if (typeof window.cookiesRegulationServices[service] === 'undefined') {
             console.log('No auto-configured service exists with the ' + service + ' id');
             delete config.services[serviceId];
             continue;
@@ -153,11 +153,11 @@ var buildAndStoreConfiguration = function (config) {
 
         var definedOptions = [];
 
-        for (option in options) {
+        for (var option in options) {
             definedOptions.push(option);
         }
 
-        var requiredOptions = window.cookieRegulationServices[service].requiredOptions;
+        var requiredOptions = window.cookiesRegulationServices[service].requiredOptions;
         var hasMissingOption = false;
 
         for(var i = 0; i < requiredOptions.length; i++) {
@@ -177,7 +177,7 @@ var buildAndStoreConfiguration = function (config) {
 
             config.services[serviceId].mandatory = true;
             config.services[serviceId].initializationCallback = function () {
-                window.cookieRegulationServices[service].callback(options);
+                window.cookiesRegulationServices[service].callback(options);
             };
 
             delete config.services[serviceId].service;

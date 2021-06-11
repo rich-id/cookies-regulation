@@ -1,7 +1,7 @@
-window.cookieRegulationServices = {};
+window.cookiesRegulationServices = {};
 
 //  Google Tag Manager
-window.cookieRegulationServices.googleTagManager = {
+window.cookiesRegulationServices.googleTagManager = {
     requiredOptions: ['id'],
     callback: function (options) {
         window.dataLayer = window.dataLayer || [];

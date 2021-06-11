@@ -19,3 +19,4 @@ node_modules/
 # Project
 dist
 .cache
+.parcel-cache

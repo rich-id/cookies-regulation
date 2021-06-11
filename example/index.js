@@ -1,6 +1,6 @@
-window.CookieRegulation = require('../js/cookies-regulation');
+window.CookiesRegulation = require('../js/cookies-regulation');
 
-CookieRegulation.init(
+CookiesRegulation.init(
     {
         website: 'Cookies Regulation',
         privacyPolicy: {

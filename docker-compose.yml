@@ -2,7 +2,7 @@ version: '3.7'
 services:
     application:
         container_name: cookies_regulation_app
-        image: richcongress/php:7.3
+        image: richcongress/php:8.0
         expose:
             - "5502"
         ports:
