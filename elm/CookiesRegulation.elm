@@ -76,7 +76,17 @@ init flags =
             filterMandatoryServices services
 
         enabledMandatoryServices =
-            getEnabledMandatoryServices flags.preferences mandatoryServices
+            getEnabledMandatoryServicesByPreferences flags.preferences mandatoryServices
+
+        needUserAction_ =
+            needUserAction mandatoryServices flags.preferences
+
+        initialBandeauState =
+            if needUserAction_ then
+                BandeauNeedOpen
+
+            else
+                BandeauClosed
     in
     ( { website = flags.config.website
       , modal = flags.config.modal
@@ -84,7 +94,8 @@ init flags =
       , mandatoryServices = mandatoryServices
       , notMandatoryServices = filterNotMandatoryServices services
       , enabledMandatoryServices = enabledMandatoryServices
-      , bandeauState = initialBandeauState mandatoryServices flags.preferences
+      , needUserAction = needUserAction_
+      , bandeauState = initialBandeauState
       , modalState = ModalClosed
       , modalBodyScrollable = False
       }
@@ -133,23 +144,17 @@ initializeServices services enabledServices =
         )
 
 
-initialBandeauState : Services -> Preferences -> BandeauState
-initialBandeauState services preferences =
+needUserAction : Services -> Preferences -> Bool
+needUserAction services preferences =
     let
         preferencesServiceIds =
             List.map (\( id, _ ) -> id) preferences
-
-        allServicesConfigured =
-            services
-                |> Dict.keys
-                |> List.map (\serviceId -> List.member serviceId preferencesServiceIds)
-                |> Bool.all
     in
-    if allServicesConfigured then
-        BandeauClosed
-
-    else
-        BandeauNeedOpen
+    services
+        |> Dict.keys
+        |> List.map (\serviceId -> List.member serviceId preferencesServiceIds)
+        |> Bool.all
+        |> not
 
 
 
@@ -172,34 +177,16 @@ update msg model =
             )
 
         MsgBandeauAcceptAll ->
-            ( model
-                |> setAllServicesEnabledAction
-                |> closeBandeauAction
-            , setPreferences (buildAcceptAllPreferences model)
-            )
+            applyServiceStatusChanges (setAllServicesEnabledAction model)
 
         MsgBandeauRejectAll ->
-            ( model
-                |> setAllServicesDisabledAction
-                |> closeBandeauAction
-            , setPreferences (buildRejectAllPreferences model)
-            )
+            applyServiceStatusChanges (setAllServicesDisabledAction model)
 
         MsgModalAcceptAll ->
-            ( model
-                |> setAllServicesEnabledAction
-                |> closeBandeauAction
-                |> closeModalAction
-            , setPreferences (buildAcceptAllPreferences model)
-            )
+            applyServiceStatusChanges (setAllServicesEnabledAction model)
 
         MsgModalRejectAll ->
-            ( model
-                |> setAllServicesDisabledAction
-                |> closeBandeauAction
-                |> closeModalAction
-            , setPreferences (buildRejectAllPreferences model)
-            )
+            applyServiceStatusChanges (setAllServicesDisabledAction model)
 
         MsgUpdateServiceStatus serviceId ->
             ( { model
@@ -212,11 +199,7 @@ update msg model =
             )
 
         MsgSave ->
-            ( model
-                |> closeBandeauAction
-                |> closeModalAction
-            , setPreferences (buildPreferencesForSave model)
-            )
+            applyServiceStatusChanges model
 
         -- Internal
         InternalMsgOpenBandeau ->
@@ -256,7 +239,16 @@ closeBandeauAction model =
 
 closeModalAction : Model -> Model
 closeModalAction model =
-    { model | modalState = ModalFadeClose }
+    if model.modalState == ModalClosed then
+        model
+
+    else
+        { model | modalState = ModalFadeClose }
+
+
+resetNeedUserAction : Model -> Model
+resetNeedUserAction model =
+    { model | needUserAction = False }
 
 
 setAllServicesEnabledAction : Model -> Model
@@ -267,6 +259,30 @@ setAllServicesEnabledAction model =
 setAllServicesDisabledAction : Model -> Model
 setAllServicesDisabledAction model =
     { model | mandatoryServices = Dict.map (\_ service -> { service | enabled = False }) model.mandatoryServices }
+
+
+recomputeEnabledMandatoryServicesAction : Model -> Model
+recomputeEnabledMandatoryServicesAction model =
+    { model | enabledMandatoryServices = getEnabledMandatoryServices model.mandatoryServices }
+
+
+loadNotLoadedServices : Model -> List (Cmd msg)
+loadNotLoadedServices model =
+    model.mandatoryServices
+        |> getEnabledMandatoryServices
+        |> List.filter (\serviceId -> not (List.member serviceId model.enabledMandatoryServices))
+        |> List.map initializeService
+
+
+applyServiceStatusChanges : Model -> ( Model, Cmd msg )
+applyServiceStatusChanges model =
+    ( model
+        |> resetNeedUserAction
+        |> recomputeEnabledMandatoryServicesAction
+        |> closeBandeauAction
+        |> closeModalAction
+    , Cmd.batch ([ setPreferences (buildPreferencesForSave model) ] ++ loadNotLoadedServices model)
+    )
 
 
 

@@ -85,7 +85,9 @@ module.exports = {
         expirationDate.setMonth(expirationDate.getMonth() + 6);
 
         const expires = "expires=" + expirationDate.toUTCString();
-        document.cookie = 'cookie_preferences=' + encodedPreferences + '; ' + expires + '; path=/';
+        const secure = location.protocol === 'https:' ? '; Secure' : '';
+
+        document.cookie = 'cookie_preferences=' + encodedPreferences + '; ' + expires + '; path=/;' + secure + '; samesite=lax';
     },
 
     getPreferences: function() {

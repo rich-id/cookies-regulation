@@ -1,4 +1,4 @@
-module Internal.Helpers exposing (attrWhen, buildAcceptAllPreferences, buildPreferencesForSave, buildRejectAllPreferences, filterMandatoryServices, filterNotMandatoryServices, getEnabledMandatoryServices, hasAcceptationChange, htmlWhen, htmlWhenNot, htmlWhenNotEmpty, relatedCompaniesLabel, updateService)
+module Internal.Helpers exposing (attrWhen, buildPreferencesForSave, filterMandatoryServices, filterNotMandatoryServices, getEnabledMandatoryServices, getEnabledMandatoryServicesByPreferences, hasAcceptationChange, htmlWhen, htmlWhenNot, htmlWhenNotEmpty, relatedCompaniesLabel, updateService)
 
 import Dict
 import Html exposing (Attribute, Html, a, text)
@@ -51,20 +51,6 @@ updateService services serviceId updater =
             )
 
 
-buildAcceptAllPreferences : Model -> Preferences
-buildAcceptAllPreferences model =
-    model.mandatoryServices
-        |> Dict.map (\serviceId _ -> ( serviceId, True ))
-        |> Dict.values
-
-
-buildRejectAllPreferences : Model -> Preferences
-buildRejectAllPreferences model =
-    model.mandatoryServices
-        |> Dict.map (\serviceId _ -> ( serviceId, False ))
-        |> Dict.values
-
-
 buildPreferencesForSave : Model -> Preferences
 buildPreferencesForSave model =
     model.mandatoryServices
@@ -82,13 +68,27 @@ filterNotMandatoryServices services =
     Dict.filter (\_ service -> not service.mandatory) services
 
 
-getEnabledMandatoryServices : Preferences -> Services -> List ServiceId
-getEnabledMandatoryServices preferences mandatoryServices =
+getEnabledMandatoryServicesByPreferences : Preferences -> Services -> List ServiceId
+getEnabledMandatoryServicesByPreferences preferences mandatoryServices =
     preferences
         |> List.filterMap
             (\( serviceId, isEnabled ) ->
                 if isEnabled && Dict.member serviceId mandatoryServices then
                     Just serviceId
+
+                else
+                    Nothing
+            )
+
+
+getEnabledMandatoryServices : Services -> List ServiceId
+getEnabledMandatoryServices mandatoryServices =
+    mandatoryServices
+        |> Dict.values
+        |> List.filterMap
+            (\service ->
+                if service.enabled then
+                    Just service.id
 
                 else
                     Nothing

@@ -35,6 +35,7 @@ type alias Model =
     , mandatoryServices : Services
     , notMandatoryServices : Services
     , enabledMandatoryServices : List ServiceId
+    , needUserAction : Bool
     , bandeauState : BandeauState
     , modalState : ModalState
     , modalBodyScrollable : Bool

@@ -24,7 +24,7 @@ view model =
             ]
             [ div [ class "cookies-regulation-modal-dialog" ]
                 [ div [ class "cookies-regulation-modal-content" ]
-                    [ modalHeaderView
+                    [ modalHeaderView model
                     , modalBodyView model
                     , modalFooterView model
                     ]
@@ -39,11 +39,12 @@ view model =
 -- Internal
 
 
-modalHeaderView : Html Msg
-modalHeaderView =
+modalHeaderView : Model -> Html Msg
+modalHeaderView model =
     div [ class "cookies-regulation-modal-header" ]
         [ h3 [] [ text "Gérer mes cookies" ]
-        , Picto.close [ onClick MsgCloseModal ]
+        , htmlWhenNot model.needUserAction <|
+            Picto.close [ onClick MsgCloseModal ]
         ]
 
 
@@ -71,7 +72,7 @@ modalBodyView model =
 modalFooterView : Model -> Html Msg
 modalFooterView model =
     div [ class "cookies-regulation-modal-footer" ]
-        [ Button.view { label = "Mémoriser mes choix", type_ = Button.Primary, disabled = not (hasAcceptationChange model), msg = MsgSave }
+        [ Button.view { label = "Mémoriser mes choix", type_ = Button.Primary, disabled = not (hasAcceptationChange model) && not model.needUserAction, msg = MsgSave }
         ]
 
 
