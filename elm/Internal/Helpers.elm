@@ -1,4 +1,4 @@
-module Internal.Helpers exposing (attrWhen, buildAcceptAllPreferences, buildRejectAllPreferences, filterMandatoryServices, filterNotMandatoryServices, getEnabledMandatoryServices, hasAcceptationChange, htmlWhen, htmlWhenNot, htmlWhenNotEmpty, relatedCompaniesLabel, updateService)
+module Internal.Helpers exposing (attrWhen, buildAcceptAllPreferences, buildPreferencesForSave, buildRejectAllPreferences, filterMandatoryServices, filterNotMandatoryServices, getEnabledMandatoryServices, hasAcceptationChange, htmlWhen, htmlWhenNot, htmlWhenNotEmpty, relatedCompaniesLabel, updateService)
 
 import Dict
 import Html exposing (Attribute, Html, a, text)
@@ -62,6 +62,13 @@ buildRejectAllPreferences : Model -> Preferences
 buildRejectAllPreferences model =
     model.mandatoryServices
         |> Dict.map (\serviceId _ -> ( serviceId, False ))
+        |> Dict.values
+
+
+buildPreferencesForSave : Model -> Preferences
+buildPreferencesForSave model =
+    model.mandatoryServices
+        |> Dict.map (\serviceId service -> ( serviceId, service.enabled ))
         |> Dict.values
 
 

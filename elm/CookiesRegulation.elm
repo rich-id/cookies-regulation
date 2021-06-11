@@ -84,7 +84,7 @@ init flags =
       , mandatoryServices = mandatoryServices
       , notMandatoryServices = filterNotMandatoryServices services
       , enabledMandatoryServices = enabledMandatoryServices
-      , bandeauState = initialBandeauState services flags.preferences
+      , bandeauState = initialBandeauState mandatoryServices flags.preferences
       , modalState = ModalClosed
       , modalBodyScrollable = False
       }
@@ -212,7 +212,11 @@ update msg model =
             )
 
         MsgSave ->
-            ( model, Cmd.none )
+            ( model
+                |> closeBandeauAction
+                |> closeModalAction
+            , setPreferences (buildPreferencesForSave model)
+            )
 
         -- Internal
         InternalMsgOpenBandeau ->

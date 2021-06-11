@@ -1,5 +1,3 @@
-require('../js/cookies-regulation-services')
-
 window.CookieRegulation = require('../js/cookies-regulation');
 
 CookieRegulation.init(
@@ -21,15 +19,16 @@ CookieRegulation.init(
                 description:  'Outil d’analyse comportementale et d’enregistrement anonyme du comportement des utilisateurs et utilisatrices.',
                 conservation: '1 an',
                 mandatory:    true,
+                initializationCallback: function () {
+                    console.log('hotjar');
+                }
             },
-            googleAnalytics: {
-                name:         'Google Analytics',
+            googleTagManager: {
+                name:         'Google Tag Manager',
                 description:  'Outil de statistiques d’audience et d’analyse de navigation.',
                 conservation: '2 ans',
-                mandatory:    true,
-                initializationCallback: function () {
-                    window.cookieRegulationServices.gtm('GTM-TL7WDMC');
-                }
+                service: 'googleTagManager',
+                options: {id: 'GTM-TL7WDMC'},
             },
             cookie: {
                 name:         'Conservation de vos choix de cookies',
