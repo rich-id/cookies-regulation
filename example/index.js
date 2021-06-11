@@ -1,3 +1,5 @@
+require('../js/cookies-regulation-services')
+
 window.CookieRegulation = require('../js/cookies-regulation');
 
 CookieRegulation.init(
@@ -14,32 +16,20 @@ CookieRegulation.init(
             relatedCompaniesPrivacyPolicyUrl: ''
         },
         services: {
+            hotjar: {
+                name:         'Hotjar',
+                description:  'Outil d’analyse comportementale et d’enregistrement anonyme du comportement des utilisateurs et utilisatrices.',
+                conservation: '1 an',
+                mandatory:    true,
+            },
             googleAnalytics: {
                 name:         'Google Analytics',
                 description:  'Outil de statistiques d’audience et d’analyse de navigation.',
                 conservation: '2 ans',
                 mandatory:    true,
                 initializationCallback: function () {
-                    window.dataLayer = window.dataLayer || [];
-                    window.dataLayer.push({
-                        'gtm.start': new Date().getTime(),
-                        event: 'gtm.js'
-                    });
-
-                    var scripts = document.getElementsByTagName('script')[0];
-
-                    var googleTagManagerScript = document.createElement('script');
-                    googleTagManagerScript.async = true;
-                    googleTagManagerScript.src ='https://www.googletagmanager.com/gtm.js?id=GTM-TL7WDMC';
-
-                    scripts.parentNode.insertBefore(googleTagManagerScript, scripts);
+                    window.cookieRegulationServices.gtm('GTM-TL7WDMC');
                 }
-            },
-            hotjar: {
-                name:         'Hotjar',
-                description:  'Outil d’analyse comportementale et d’enregistrement anonyme du comportement des utilisateurs et utilisatrices.',
-                conservation: '1 an',
-                mandatory:    true,
             },
             cookie: {
                 name:         'Conservation de vos choix de cookies',

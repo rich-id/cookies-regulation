@@ -1,4 +1,4 @@
-module Internal.Helpers exposing (attrWhen, buildAcceptAllPreferences, buildRejectAllPreferences, filterMandatoryServices, filterNotMandatoryServices, getEnabledServices, htmlWhen, htmlWhenNot, htmlWhenNotEmpty, relatedCompaniesLabel, updateService)
+module Internal.Helpers exposing (attrWhen, buildAcceptAllPreferences, buildRejectAllPreferences, filterMandatoryServices, filterNotMandatoryServices, getEnabledMandatoryServices, hasAcceptationChange, htmlWhen, htmlWhenNot, htmlWhenNotEmpty, relatedCompaniesLabel, updateService)
 
 import Dict
 import Html exposing (Attribute, Html, a, text)
@@ -75,17 +75,26 @@ filterNotMandatoryServices services =
     Dict.filter (\_ service -> not service.mandatory) services
 
 
-getEnabledServices : Preferences -> List ServiceId
-getEnabledServices preferences =
+getEnabledMandatoryServices : Preferences -> Services -> List ServiceId
+getEnabledMandatoryServices preferences mandatoryServices =
     preferences
         |> List.filterMap
             (\( serviceId, isEnabled ) ->
-                if isEnabled then
+                if isEnabled && Dict.member serviceId mandatoryServices then
                     Just serviceId
 
                 else
                     Nothing
             )
+
+
+hasAcceptationChange : Model -> Bool
+hasAcceptationChange model =
+    (model.mandatoryServices
+        |> Dict.filter (\_ service -> service.enabled)
+        |> Dict.keys
+    )
+        /= model.enabledMandatoryServices
 
 
 relatedCompaniesLabel : Model -> List (Html msg)

@@ -19,9 +19,9 @@ view model =
             ]
             [ div [ class "cookies-regulation-bandeau-contents" ]
                 [ span [ class "cookies-regulation-description" ] [ text "Contrôlez les cookies que nous utilisons pour ce site..." ]
-                , Button.view { label = "Personnaliser", type_ = Button.Secondary, msg = MsgOpenModal }
-                , Button.view { label = "Tout accepter", type_ = Button.Primary, msg = MsgBandeauAcceptAll }
-                , Button.view { label = "Tout refuser", type_ = Button.Primary, msg = MsgBandeauRejectAll }
+                , Button.view { label = "Personnaliser", type_ = Button.Secondary, disabled = False, msg = MsgOpenModal }
+                , Button.view { label = "Tout accepter", type_ = Button.Primary, disabled = False, msg = MsgBandeauAcceptAll }
+                , Button.view { label = "Tout refuser", type_ = Button.Primary, disabled = False, msg = MsgBandeauRejectAll }
                 , a
                     [ class "cookies-regulation-privacy-policy"
                     , href model.privacyPolicy.url

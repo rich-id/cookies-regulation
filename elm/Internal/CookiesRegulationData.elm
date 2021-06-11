@@ -34,7 +34,7 @@ type alias Model =
     , privacyPolicy : PrivacyPolicy
     , mandatoryServices : Services
     , notMandatoryServices : Services
-    , enabledServices : List ServiceId
+    , enabledMandatoryServices : List ServiceId
     , bandeauState : BandeauState
     , modalState : ModalState
     , modalBodyScrollable : Bool
@@ -56,7 +56,8 @@ type alias ModalConfiguration =
 
 
 type alias Service =
-    { name : String
+    { id : String
+    , name : String
     , description : Maybe String
     , conservation : String
     , mandatory : Bool
@@ -65,7 +66,7 @@ type alias Service =
 
 
 type alias Services =
-    Dict String Service
+    Dict ServiceId Service
 
 
 type alias Preferences =
@@ -120,6 +121,7 @@ type Msg
 serviceConfigurationDecoder : Decode.Decoder Service
 serviceConfigurationDecoder =
     Decode.succeed Service
+        |> Decode.hardcoded ""
         |> Decode.required "name" Decode.string
         |> Decode.required "description" (Decode.nullable Decode.string)
         |> Decode.required "conservation" Decode.string

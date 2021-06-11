@@ -10,6 +10,7 @@ import Internal.Helpers exposing (..)
 type alias ButtonConfig msg =
     { label : String
     , type_ : ButtonType
+    , disabled : Bool
     , msg : msg
     }
 
@@ -24,6 +25,7 @@ view config =
     button
         [ class "cookies-regulation-button"
         , class "cookies-regulation-button-secondary" |> attrWhen (config.type_ == Secondary)
+        , class "cookies-regulation-button-disabled" |> attrWhen config.disabled
         , onClick config.msg
         ]
         [ text config.label ]

@@ -1,5 +1,6 @@
 port module CookiesRegulation exposing (main)
 
+import Bool.Extra as Bool
 import Browser
 import Browser.Dom exposing (Error, Viewport, getViewportOf)
 import Browser.Events exposing (onResize)
@@ -71,20 +72,23 @@ init flags =
         services =
             decodeServices flags
 
-        enabledServices =
-            getEnabledServices flags.preferences
+        mandatoryServices =
+            filterMandatoryServices services
+
+        enabledMandatoryServices =
+            getEnabledMandatoryServices flags.preferences mandatoryServices
     in
     ( { website = flags.config.website
       , modal = flags.config.modal
       , privacyPolicy = flags.config.privacyPolicy
-      , mandatoryServices = filterMandatoryServices services
+      , mandatoryServices = mandatoryServices
       , notMandatoryServices = filterNotMandatoryServices services
-      , enabledServices = enabledServices
-      , bandeauState = BandeauNeedOpen
+      , enabledMandatoryServices = enabledMandatoryServices
+      , bandeauState = initialBandeauState services flags.preferences
       , modalState = ModalClosed
       , modalBodyScrollable = False
       }
-    , initializeServices services enabledServices
+    , initializeServices services enabledMandatoryServices
     )
 
 
@@ -107,7 +111,13 @@ decodeServices flags =
     flags.config.services
         |> Decode.decodeValue (Decode.dict serviceConfigurationDecoder)
         |> Result.withDefault Dict.empty
-        |> Dict.map (\key service -> { service | enabled = isEnabled key })
+        |> Dict.map
+            (\serviceId service ->
+                { service
+                    | id = serviceId
+                    , enabled = isEnabled serviceId
+                }
+            )
 
 
 initializeServices : Services -> List ServiceId -> Cmd msg
@@ -121,6 +131,25 @@ initializeServices services enabledServices =
             |> Dict.keys
             |> List.map initializeService
         )
+
+
+initialBandeauState : Services -> Preferences -> BandeauState
+initialBandeauState services preferences =
+    let
+        preferencesServiceIds =
+            List.map (\( id, _ ) -> id) preferences
+
+        allServicesConfigured =
+            services
+                |> Dict.keys
+                |> List.map (\serviceId -> List.member serviceId preferencesServiceIds)
+                |> Bool.all
+    in
+    if allServicesConfigured then
+        BandeauClosed
+
+    else
+        BandeauNeedOpen
 
 
 

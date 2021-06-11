@@ -1,4 +1,7 @@
 :root {
+    --rich-id-cookies-regulation-dark: #000000;
+    --rich-id-cookies-regulation-white: #FFFFFF;
+
     --rich-id-cookies-regulation-primary: #e6007e;
     --rich-id-cookies-regulation-primary-variant: #c20069;
     --rich-id-cookies-regulation-secondary: #2B2468;
@@ -33,7 +36,7 @@
 }
 
 #rich-id-cookies-regulation a {
-    color: #000000;
+    color: var(--rich-id-cookies-regulation-dark);
     text-decoration: underline;
 
     &:hover {
@@ -43,7 +46,7 @@
 }
 
 #rich-id-cookies-regulation {
-    color: #FFFFFF;
+    color: var(--rich-id-cookies-regulation-white);
     font-family: Arial, sans-serif;
     font-size: 16px;
     line-height: 22px;
@@ -52,7 +55,7 @@
         background: var(--rich-id-cookies-regulation-primary);
         border-radius: 4px;
         border: none;
-        color: #FFFFFF;
+        color: var(--rich-id-cookies-regulation-white);
         font-size: 16px;
         letter-spacing: normal;
         line-height: 16px;
@@ -60,19 +63,27 @@
         margin-top: 8px;
         padding: 6px 13px 8px 13px;
 
-        &:hover {
+        &:hover:not(.cookies-regulation-button-disabled) {
             background: var(--rich-id-cookies-regulation-primary-variant);
             cursor: pointer;
         }
 
         &.cookies-regulation-button-secondary {
             color: var(--rich-id-cookies-regulation-primary);
-            background: #FFFFFF;
+            background: var(--rich-id-cookies-regulation-white);
         }
 
         &.cookies-regulation-button-secondary:hover {
-            color: #FFFFFF;
+            color: var(--rich-id-cookies-regulation-white);
             background: var(--rich-id-cookies-regulation-primary);
+        }
+
+        &.cookies-regulation-button-disabled {
+            opacity: .65;
+
+            &:hover {
+                cursor: not-allowed;
+            }
         }
     }
 
@@ -107,13 +118,13 @@
             }
 
             a.cookies-regulation-privacy-policy {
-                color: #FFFFFF;
+                color: var(--rich-id-cookies-regulation-white);
                 padding-bottom: 8px;
                 padding-top: 8px;
                 text-decoration: underline;
 
                 &:hover {
-                    color: #FFFFFF;
+                    color: var(--rich-id-cookies-regulation-white);
                     cursor: pointer;
                     text-decoration: none;
                 }
@@ -153,7 +164,7 @@
 }
 
 .cookies-regulation-modal {
-    color: #000000;
+    color: var(--rich-id-cookies-regulation-dark);
     height: 100%;
     left: 0;
     outline: 0;
@@ -196,7 +207,7 @@
 
         .cookies-regulation-modal-content {
             background-clip: padding-box;
-            background-color: #fff;
+            background-color: var(--rich-id-cookies-regulation-white);
             border-radius: 4px;
             box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.35);
             display: flex;
@@ -353,7 +364,7 @@
         position: relative;
 
         .cookies-regulation-switch-checkbox-rounded {
-            background: #FFFFFF;
+            background: var(--rich-id-cookies-regulation-white);
             border-radius: 50%;
             content: "";
             height: 18px;
@@ -387,7 +398,7 @@
     &.cookies-regulation-switch-checkbox-container-checked {
         .cookies-regulation-switch-checkbox-rounded {
             left: 15px;
-            background-color: #FFFFFF;
+            background-color: var(--rich-id-cookies-regulation-white);
         }
     }
 }

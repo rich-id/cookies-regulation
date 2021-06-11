@@ -26,7 +26,7 @@ view model =
                 [ div [ class "cookies-regulation-modal-content" ]
                     [ modalHeaderView
                     , modalBodyView model
-                    , modalFooterView
+                    , modalFooterView model
                     ]
                 ]
             ]
@@ -68,10 +68,10 @@ modalBodyView model =
         ]
 
 
-modalFooterView : Html Msg
-modalFooterView =
+modalFooterView : Model -> Html Msg
+modalFooterView model =
     div [ class "cookies-regulation-modal-footer" ]
-        [ Button.view { label = "Mémoriser mes choix", type_ = Button.Primary, msg = MsgSave }
+        [ Button.view { label = "Mémoriser mes choix", type_ = Button.Primary, disabled = not (hasAcceptationChange model), msg = MsgSave }
         ]
 
 
@@ -80,8 +80,9 @@ servicesListView title_ services =
     let
         servicesView =
             services
-                |> Dict.map (\serviceId service -> serviceView serviceId service)
                 |> Dict.values
+                |> List.sortBy .name
+                |> List.map (\service -> serviceView service)
     in
     div [ class "cookies-regulation-services" ]
         ([ h4 [] [ text title_ ]
@@ -90,8 +91,8 @@ servicesListView title_ services =
         )
 
 
-serviceView : String -> Service -> Html Msg
-serviceView serviceId service =
+serviceView : Service -> Html Msg
+serviceView service =
     let
         description =
             Maybe.withDefault "" service.description
@@ -101,13 +102,13 @@ serviceView serviceId service =
             [ htmlWhenNot service.mandatory <| Picto.padlock
             , htmlWhen service.mandatory <|
                 SwitchCheckbox.view
-                    { id = serviceId
+                    { id = service.id
                     , isChecked = service.enabled
-                    , msg_ = MsgUpdateServiceStatus serviceId
+                    , msg_ = MsgUpdateServiceStatus service.id
                     }
             ]
         , div []
-            [ div [] [ span [ onClick (MsgUpdateServiceStatus serviceId) |> attrWhen service.mandatory ] [ text service.name ] ]
+            [ div [] [ span [ onClick (MsgUpdateServiceStatus service.id) |> attrWhen service.mandatory ] [ text service.name ] ]
             , htmlWhenNotEmpty description (\message -> div [ class "cookies-regulation-service-description" ] [ text message ])
             , div [ class "cookies-regulation-service-conservation" ]
                 [ b [] [ text "Conservation :" ]
@@ -149,6 +150,6 @@ privacyPolicyLinkView model =
 globalActionButtonsView : Html Msg
 globalActionButtonsView =
     div [ class "cookies-regulation-modal-body-content-actions" ]
-        [ Button.view { label = "Tout accepter", type_ = Button.Primary, msg = MsgModalAcceptAll }
-        , Button.view { label = "Tout refuser", type_ = Button.Primary, msg = MsgModalRejectAll }
+        [ Button.view { label = "Tout accepter", type_ = Button.Primary, disabled = False, msg = MsgModalAcceptAll }
+        , Button.view { label = "Tout refuser", type_ = Button.Primary, disabled = False, msg = MsgModalRejectAll }
         ]
