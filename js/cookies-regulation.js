@@ -58,7 +58,6 @@ module.exports = {
             return;
         }
 
-        // Supprimer les cookies dont les domaines sont présentés dans la liste
         service.cookieDomains.forEach(function (domain) {
             browser.cookies.get({url: domain}).then(function (cookie) {
                 if (!cookie) {
@@ -74,7 +73,10 @@ module.exports = {
         window.cookiesRegulationBlock.ports.openModal.send(null);
     },
 
-    setPreferences: function(preferences) {
+    setPreferences: function(data) {
+        var preferences = data[0];
+        var reloadPage = data[1];
+
         var encodedPreferences = encodeCookiePreferencesData(preferences);
 
         if (encodedPreferences === null) {
@@ -88,6 +90,10 @@ module.exports = {
         const secure = location.protocol === 'https:' ? '; Secure' : '';
 
         document.cookie = 'cookie_preferences=' + encodedPreferences + '; ' + expires + '; path=/;' + secure + '; samesite=lax';
+
+        if (reloadPage) {
+            window.location.reload();
+        }
     },
 
     getPreferences: function() {

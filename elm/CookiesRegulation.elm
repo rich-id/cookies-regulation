@@ -25,7 +25,7 @@ port modalOpened : () -> Cmd msg
 port modalClosed : () -> Cmd msg
 
 
-port setPreferences : Preferences -> Cmd msg
+port setPreferences : ( Preferences, Bool ) -> Cmd msg
 
 
 port initializeService : String -> Cmd msg
@@ -276,12 +276,23 @@ loadNotLoadedServices model =
 
 applyServiceStatusChanges : Model -> ( Model, Cmd msg )
 applyServiceStatusChanges model =
+    let
+        hasRejectedService_ =
+            hasRejectedService model
+
+        loadServicesCmds =
+            if hasRejectedService_ then
+                []
+
+            else
+                loadNotLoadedServices model
+    in
     ( model
         |> resetNeedUserAction
         |> recomputeEnabledMandatoryServicesAction
         |> closeBandeauAction
         |> closeModalAction
-    , Cmd.batch ([ setPreferences (buildPreferencesForSave model) ] ++ loadNotLoadedServices model)
+    , Cmd.batch ([ setPreferences ( buildPreferencesForSave model, hasRejectedService_ ) ] ++ loadServicesCmds)
     )
 
 

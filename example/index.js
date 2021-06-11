@@ -11,41 +11,35 @@ CookieRegulation.init(
         modal: {
             header: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras hendrerit, velit vitae accumsan pellentesque, sapien arcu gravida nibh, at accumsan nulla sapien sed magna. Integer sed sem dolor. Pellentesque feugiat, quam quis dapibus vehicula, risus morbi.',
             relatedCompaniesCount: 5,
-            relatedCompaniesPrivacyPolicyUrl: ''
+            relatedCompaniesPrivacyPolicyUrl: 'https://example.com/companies'
         },
         services: {
-            hotjar: {
-                name:         'Hotjar',
-                description:  'Outil d’analyse comportementale et d’enregistrement anonyme du comportement des utilisateurs et utilisatrices.',
-                conservation: '1 an',
-                mandatory:    true,
-                initializationCallback: function () {
-                    console.log('hotjar');
-                }
-            },
             googleTagManager: {
                 name:         'Google Tag Manager',
-                description:  'Outil de statistiques d’audience et d’analyse de navigation.',
-                conservation: '2 ans',
+                description:  'Système de gestion de balises',
+                conservation: '6 mois.',
                 service: 'googleTagManager',
-                options: {id: 'GTM-TL7WDMC'},
+                options: {id: 'GTM-TEST'},
             },
-            cookie: {
-                name:         'Conservation de vos choix de cookies',
-                description:  'Outil d’analyse comportementale et d’enregistrement anonyme du comportement des utilisateurs et utilisatrices.',
-                conservation: '6 mois',
+            cookieTest1: {
+                name:         'Cookie de test',
+                description:  'Description de test.',
+                conservation: '1 an.',
+                mandatory:    true,
+                initializationCallback: function () {
+                    alert('Cookie de test');
+                }
+            },
+            cookieTest2: {
+                name:         'Autre cookie de test 1',
+                description:  null,
+                conservation: '6 mois.',
                 mandatory:    false,
             },
-            login: {
-                name:         'Mémorisation de votre identifiant de session, afin de maintenir votre connexion pendant la navigation',
+            cookieTest3: {
+                name:         'Autre cookie de test 2',
                 description:  null,
-                conservation: 'jusqu’à votre déconnexion. 4 heures maximum',
-                mandatory:    false,
-            },
-            location: {
-                name:         'Mémorisation du lieu utilisé pour la recherche de formations.',
-                description:  null,
-                conservation: 'pendant votre navigation',
+                conservation: 'jusqu’à votre déconnexion.',
                 mandatory:    false,
             }
         }
