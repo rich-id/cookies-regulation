@@ -1,8 +1,9 @@
-module Internal.Helpers exposing (attrWhen, htmlWhen, htmlWhenNot, htmlWhenNotEmpty, relatedCompaniesLabel)
+module Internal.Helpers exposing (attrWhen, buildAcceptAllPreferences, buildRejectAllPreferences, filterMandatoryServices, filterNotMandatoryServices, getEnabledServices, htmlWhen, htmlWhenNot, htmlWhenNotEmpty, relatedCompaniesLabel, updateService)
 
+import Dict
 import Html exposing (Attribute, Html, a, text)
 import Html.Attributes exposing (class, href)
-import Internal.CookiesRegulationData exposing (Model)
+import Internal.CookiesRegulationData exposing (Model, Preferences, Service, ServiceId, Services)
 
 
 attrWhen : Bool -> Attribute msg -> Attribute msg
@@ -35,6 +36,56 @@ htmlWhenNotEmpty message view_ =
 
     else
         view_ message
+
+
+updateService : Services -> String -> (Service -> Service) -> Services
+updateService services serviceId updater =
+    services
+        |> Dict.map
+            (\key service ->
+                if key == serviceId then
+                    updater service
+
+                else
+                    service
+            )
+
+
+buildAcceptAllPreferences : Model -> Preferences
+buildAcceptAllPreferences model =
+    model.mandatoryServices
+        |> Dict.map (\serviceId _ -> ( serviceId, True ))
+        |> Dict.values
+
+
+buildRejectAllPreferences : Model -> Preferences
+buildRejectAllPreferences model =
+    model.mandatoryServices
+        |> Dict.map (\serviceId _ -> ( serviceId, False ))
+        |> Dict.values
+
+
+filterMandatoryServices : Services -> Services
+filterMandatoryServices services =
+    Dict.filter (\_ service -> service.mandatory) services
+
+
+filterNotMandatoryServices : Services -> Services
+filterNotMandatoryServices services =
+    Dict.filter (\_ service -> not service.mandatory) services
+
+
+getEnabledServices : Preferences -> List ServiceId
+getEnabledServices preferences =
+    preferences
+        |> List.filterMap
+            (\( serviceId, isEnabled ) ->
+                if isEnabled then
+                    Just serviceId
+
+                else
+                    Nothing
+            )
 
 
 relatedCompaniesLabel : Model -> List (Html msg)

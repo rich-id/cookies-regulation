@@ -6,12 +6,28 @@ window.getReferencesCookie = function () {
     for(var i = 0; i < cookieArr.length; i++) {
         var cookiePair = cookieArr[i].split("=");
 
-        if (cookiePair[0].trim() === 'cookie_preferences' ) {
+        if (cookiePair[0].trim() === 'cookie_preferences') {
             return decodeURIComponent(cookiePair[1]);
         }
     }
 
     return null;
+};
+
+window.encodeCookiePreferencesData = function (preferences) {
+    if (preferences.length === 0) {
+        return null;
+    }
+
+    return JSON.stringify(preferences);
+};
+
+window.decodeCookiePreferencesData = function (encodedPreferences) {
+    if (encodedPreferences === null || encodedPreferences === '') {
+        return [];
+    }
+
+    return JSON.parse(encodedPreferences);
 };
 
 module.exports = {
@@ -20,10 +36,12 @@ module.exports = {
         let container = document.createElement('div');
         document.body.appendChild(container);
 
+        const references = this.getPreferences();
+
         window.cookiesRegulationBlock = window.Elm.CookiesRegulation.init({
             node: container,
             flags: {
-                preferences: this.getPreferences(),
+                preferences: references,
                 config: config
             },
         });
@@ -40,9 +58,8 @@ module.exports = {
             }
         );
 
-        //
-        // window.cookiesRegulationBlock.ports.initializeService.subscribe(this.initializeService);
-        // window.cookiesRegulationBlock.ports.setPreferences.subscribe(this.setPreferences);
+        window.cookiesRegulationBlock.ports.initializeService.subscribe(this.initializeService);
+        window.cookiesRegulationBlock.ports.setPreferences.subscribe(this.setPreferences);
     },
 
     initializeService: function (serviceName) {
@@ -50,6 +67,10 @@ module.exports = {
 
         if (!service) {
             console.error('Failed to load the service "' + serviceName + '". Please check your configuration.');
+            return;
+        }
+
+        if (typeof service.initializationCallback === 'undefined' || service.initializationCallback === null) {
             return;
         }
 
@@ -81,12 +102,25 @@ module.exports = {
     },
 
     setPreferences: function(preferences) {
-        const expirationDate = Date.now();
-        expirationDate.setMonth(expirationDate.getMonth + 6);
+        var encodedPreferences = window.encodeCookiePreferencesData(preferences);
+
+        if (encodedPreferences === null) {
+            return;
+        }
+
+        const expirationDate = new Date();
+        expirationDate.setMonth(expirationDate.getMonth() + 6);
+
+        const expires = "expires=" + expirationDate.toUTCString();
+        document.cookie = 'cookie_preferences=' + encodedPreferences + '; ' + expires + '; path=/';
     },
 
     getPreferences: function() {
         var cookie = window.getReferencesCookie();
-        console.log(cookie);
+
+        if (cookie === null) {
+            return [];
+        }
+        return window.decodeCookiePreferencesData(cookie);
     }
 }

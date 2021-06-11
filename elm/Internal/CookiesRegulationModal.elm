@@ -43,7 +43,7 @@ modalHeaderView : Html Msg
 modalHeaderView =
     div [ class "cookies-regulation-modal-header" ]
         [ h3 [] [ text "Gérer mes cookies" ]
-        , Picto.close [ onClick MsgFadeCloseModal ]
+        , Picto.close [ onClick MsgCloseModal ]
         ]
 
 

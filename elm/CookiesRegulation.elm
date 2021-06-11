@@ -9,14 +9,29 @@ import Html.Attributes exposing (id)
 import Internal.CookiesRegulationBandeau as CookiesRegulationBandeau
 import Internal.CookiesRegulationData exposing (..)
 import Internal.CookiesRegulationModal as CookiesRegulationModal
+import Internal.Helpers exposing (..)
 import Json.Decode as Decode
 import Task
+
+
+
+-- Ports Cmd
 
 
 port modalOpened : () -> Cmd msg
 
 
 port modalClosed : () -> Cmd msg
+
+
+port setPreferences : Preferences -> Cmd msg
+
+
+port initializeService : String -> Cmd msg
+
+
+
+-- Ports Sub
 
 
 port openModal : (() -> msg) -> Sub msg
@@ -38,12 +53,12 @@ subscriptions model =
         bandeauStateSub =
             case model.bandeauState of
                 BandeauNeedOpen ->
-                    Browser.Events.onAnimationFrame (\_ -> MsgOpenBandeau)
+                    Browser.Events.onAnimationFrame (\_ -> InternalMsgOpenBandeau)
 
                 _ ->
                     Sub.none
     in
-    Sub.batch [ onResize MsgResize, bandeauStateSub, openModal (\_ -> MsgOpenModal) ]
+    Sub.batch [ onResize InternalMsgResize, bandeauStateSub, openModal (\_ -> MsgOpenModal) ]
 
 
 
@@ -54,37 +69,58 @@ init : Flags -> ( Model, Cmd Msg )
 init flags =
     let
         services =
-            decodeServices flags.config.services
+            decodeServices flags
+
+        enabledServices =
+            getEnabledServices flags.preferences
     in
     ( { website = flags.config.website
       , modal = flags.config.modal
       , privacyPolicy = flags.config.privacyPolicy
       , mandatoryServices = filterMandatoryServices services
       , notMandatoryServices = filterNotMandatoryServices services
-      , preferences = Nothing
+      , enabledServices = enabledServices
       , bandeauState = BandeauNeedOpen
       , modalState = ModalClosed
       , modalBodyScrollable = False
       }
-    , Cmd.none
+    , initializeServices services enabledServices
     )
 
 
-decodeServices : Decode.Value -> Services
-decodeServices json =
-    json
+decodeServices : Flags -> Services
+decodeServices flags =
+    let
+        isEnabled serviceId =
+            flags.preferences
+                |> List.filterMap
+                    (\( key, value ) ->
+                        if key == serviceId then
+                            Just value
+
+                        else
+                            Nothing
+                    )
+                |> List.head
+                |> Maybe.withDefault False
+    in
+    flags.config.services
         |> Decode.decodeValue (Decode.dict serviceConfigurationDecoder)
         |> Result.withDefault Dict.empty
+        |> Dict.map (\key service -> { service | enabled = isEnabled key })
 
 
-filterMandatoryServices : Services -> Services
-filterMandatoryServices services =
-    Dict.filter (\_ service -> service.mandatory) services
-
-
-filterNotMandatoryServices : Services -> Services
-filterNotMandatoryServices services =
-    Dict.filter (\_ service -> not service.mandatory) services
+initializeServices : Services -> List ServiceId -> Cmd msg
+initializeServices services enabledServices =
+    Cmd.batch
+        (services
+            |> Dict.filter
+                (\serviceId service ->
+                    not service.mandatory || List.member serviceId enabledServices
+                )
+            |> Dict.keys
+            |> List.map initializeService
+        )
 
 
 
@@ -94,35 +130,47 @@ filterNotMandatoryServices services =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        MsgOpenBandeau ->
-            ( { model | bandeauState = BandeauOpened }, Cmd.none )
-
-        MsgFadeCloseBandeau ->
-            ( { model | bandeauState = BandeauFadeClose }, Cmd.none )
-
-        MsgCloseBandeau ->
-            ( { model | bandeauState = BandeauClosed }, Cmd.none )
-
         MsgOpenModal ->
-            ( { model | modalState = ModalOpened, modalBodyScrollable = False }, Cmd.batch [ modalOpened (), modalBodySizeCmd ] )
-
-        MsgFadeCloseModal ->
-            ( { model | modalState = ModalFadeClose }, Cmd.none )
+            ( model
+                |> openModalAction
+            , Cmd.batch [ modalOpened (), modalBodySizeCmd ]
+            )
 
         MsgCloseModal ->
-            ( { model | modalState = ModalClosed, modalBodyScrollable = False }, modalClosed () )
+            ( model
+                |> closeModalAction
+            , Cmd.none
+            )
 
         MsgBandeauAcceptAll ->
-            ( model, Cmd.none )
+            ( model
+                |> setAllServicesEnabledAction
+                |> closeBandeauAction
+            , setPreferences (buildAcceptAllPreferences model)
+            )
 
         MsgBandeauRejectAll ->
-            ( model, Cmd.none )
+            ( model
+                |> setAllServicesDisabledAction
+                |> closeBandeauAction
+            , setPreferences (buildRejectAllPreferences model)
+            )
 
         MsgModalAcceptAll ->
-            ( model, Cmd.none )
+            ( model
+                |> setAllServicesEnabledAction
+                |> closeBandeauAction
+                |> closeModalAction
+            , setPreferences (buildAcceptAllPreferences model)
+            )
 
         MsgModalRejectAll ->
-            ( model, Cmd.none )
+            ( model
+                |> setAllServicesDisabledAction
+                |> closeBandeauAction
+                |> closeModalAction
+            , setPreferences (buildRejectAllPreferences model)
+            )
 
         MsgUpdateServiceStatus serviceId ->
             ( { model
@@ -137,10 +185,20 @@ update msg model =
         MsgSave ->
             ( model, Cmd.none )
 
-        MsgResize _ _ ->
+        -- Internal
+        InternalMsgOpenBandeau ->
+            ( { model | bandeauState = BandeauOpened }, Cmd.none )
+
+        InternalMsgCloseBandeau ->
+            ( { model | bandeauState = BandeauClosed }, Cmd.none )
+
+        InternalMsgCloseModal ->
+            ( { model | modalState = ModalClosed, modalBodyScrollable = False }, modalClosed () )
+
+        InternalMsgResize _ _ ->
             ( model, modalBodySizeCmd )
 
-        MsgModalContentSize result ->
+        InternalMsgModalContentSize result ->
             case result of
                 Ok result_ ->
                     ( { model | modalBodyScrollable = model.modalState == ModalOpened && result_.viewport.height < result_.scene.height }, Cmd.none )
@@ -149,22 +207,33 @@ update msg model =
                     ( model, Cmd.none )
 
 
-modalBodySizeCmd : Cmd Msg
-modalBodySizeCmd =
-    Task.attempt MsgModalContentSize (getViewportOf "cookies-regulation-modal-body")
+
+-- Actions
 
 
-updateService : Services -> String -> (Service -> Service) -> Services
-updateService services serviceId updater =
-    services
-        |> Dict.map
-            (\key service ->
-                if key == serviceId then
-                    updater service
+openModalAction : Model -> Model
+openModalAction model =
+    { model | modalState = ModalOpened, modalBodyScrollable = False }
 
-                else
-                    service
-            )
+
+closeBandeauAction : Model -> Model
+closeBandeauAction model =
+    { model | bandeauState = BandeauFadeClose }
+
+
+closeModalAction : Model -> Model
+closeModalAction model =
+    { model | modalState = ModalFadeClose }
+
+
+setAllServicesEnabledAction : Model -> Model
+setAllServicesEnabledAction model =
+    { model | mandatoryServices = Dict.map (\_ service -> { service | enabled = True }) model.mandatoryServices }
+
+
+setAllServicesDisabledAction : Model -> Model
+setAllServicesDisabledAction model =
+    { model | mandatoryServices = Dict.map (\_ service -> { service | enabled = False }) model.mandatoryServices }
 
 
 
@@ -177,3 +246,12 @@ view model =
         [ CookiesRegulationBandeau.view model
         , CookiesRegulationModal.view model
         ]
+
+
+
+-- Internal
+
+
+modalBodySizeCmd : Cmd Msg
+modalBodySizeCmd =
+    Task.attempt InternalMsgModalContentSize (getViewportOf "cookies-regulation-modal-body")

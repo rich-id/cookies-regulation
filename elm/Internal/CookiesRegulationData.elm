@@ -1,4 +1,4 @@
-module Internal.CookiesRegulationData exposing (BandeauState(..), Flags, FlagsConfiguration, ModalState(..), Model, Msg(..), PrivacyPolicy, Service, Services, serviceConfigurationDecoder)
+module Internal.CookiesRegulationData exposing (BandeauState(..), Flags, FlagsConfiguration, ModalState(..), Model, Msg(..), Preferences, PrivacyPolicy, Service, ServiceId, Services, serviceConfigurationDecoder)
 
 import Browser.Dom exposing (Error, Viewport)
 import Dict exposing (Dict)
@@ -11,7 +11,9 @@ import Json.Decode.Pipeline as Decode
 
 
 type alias Flags =
-    { config : FlagsConfiguration }
+    { config : FlagsConfiguration
+    , preferences : Preferences
+    }
 
 
 type alias FlagsConfiguration =
@@ -32,7 +34,7 @@ type alias Model =
     , privacyPolicy : PrivacyPolicy
     , mandatoryServices : Services
     , notMandatoryServices : Services
-    , preferences : Maybe (Dict String Bool)
+    , enabledServices : List ServiceId
     , bandeauState : BandeauState
     , modalState : ModalState
     , modalBodyScrollable : Bool
@@ -66,6 +68,18 @@ type alias Services =
     Dict String Service
 
 
+type alias Preferences =
+    List Preference
+
+
+type alias Preference =
+    ( ServiceId, Bool )
+
+
+type alias ServiceId =
+    String
+
+
 type ModalState
     = ModalClosed
     | ModalOpened
@@ -84,11 +98,7 @@ type BandeauState
 
 
 type Msg
-    = MsgOpenBandeau
-    | MsgFadeCloseBandeau
-    | MsgCloseBandeau
-    | MsgOpenModal
-    | MsgFadeCloseModal
+    = MsgOpenModal
     | MsgCloseModal
     | MsgBandeauAcceptAll
     | MsgBandeauRejectAll
@@ -96,8 +106,11 @@ type Msg
     | MsgModalRejectAll
     | MsgUpdateServiceStatus String
     | MsgSave
-    | MsgResize Int Int
-    | MsgModalContentSize (Result Error Viewport)
+    | InternalMsgOpenBandeau
+    | InternalMsgCloseBandeau
+    | InternalMsgCloseModal
+    | InternalMsgResize Int Int
+    | InternalMsgModalContentSize (Result Error Viewport)
 
 
 
