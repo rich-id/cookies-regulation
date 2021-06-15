@@ -1,4 +1,4 @@
-module Internal.Helpers exposing (attrWhen, buildPreferencesForSave, filterMandatoryServices, filterNotMandatoryServices, getEnabledMandatoryServices, getEnabledMandatoryServicesByPreferences, getRejectedMandatoryServices, hasAcceptationChange, hasRejectedService, htmlWhen, htmlWhenNot, htmlWhenNotEmpty, relatedCompaniesLabel, updateService)
+module Internal.Helpers exposing (attrWhen, buildPreferencesForSave, filterMandatoryServices, filterNotMandatoryServices, getEnabledMandatoryServices, getEnabledMandatoryServicesByPreferences, getRejectedMandatoryServices, hasAcceptationChange, hasRejectedService, htmlWhen, htmlWhenNot, htmlWhenNotEmpty, isSerciceEnabledByPreferences, relatedCompaniesLabel, updateService)
 
 import Dict
 import Html exposing (Attribute, Html, a, text)
@@ -85,28 +85,16 @@ getEnabledMandatoryServices : Services -> List ServiceId
 getEnabledMandatoryServices mandatoryServices =
     mandatoryServices
         |> Dict.values
-        |> List.filterMap
-            (\service ->
-                if service.enabled then
-                    Just service.id
-
-                else
-                    Nothing
-            )
+        |> List.filter .enabled
+        |> List.map .id
 
 
 getRejectedMandatoryServices : Services -> List ServiceId
 getRejectedMandatoryServices mandatoryServices =
     mandatoryServices
         |> Dict.values
-        |> List.filterMap
-            (\service ->
-                if service.enabled then
-                    Nothing
-
-                else
-                    Just service.id
-            )
+        |> List.filter (not << .enabled)
+        |> List.map .id
 
 
 hasAcceptationChange : Model -> Bool
@@ -125,6 +113,21 @@ hasRejectedService model =
         |> List.filter (\serviceId -> List.member serviceId model.enabledMandatoryServices)
         |> List.isEmpty
         |> not
+
+
+isSerciceEnabledByPreferences : Preferences -> ServiceId -> Bool
+isSerciceEnabledByPreferences preferences serviceId =
+    preferences
+        |> List.filterMap
+            (\( key, value ) ->
+                if key == serviceId then
+                    Just value
+
+                else
+                    Nothing
+            )
+        |> List.head
+        |> Maybe.withDefault False
 
 
 relatedCompaniesLabel : Model -> List (Html msg)

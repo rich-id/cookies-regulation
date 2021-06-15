@@ -85,6 +85,7 @@ module.exports = {
         if (cookie === null) {
             return [];
         }
+
         return decodeCookiePreferencesData(cookie);
     }
 }
@@ -119,6 +120,7 @@ var decodeCookiePreferencesData = function (encodedPreferences) {
     return JSON.parse(encodedPreferences);
 };
 
+// Create the configuration from the declared services
 var buildAndStoreConfiguration = function (config) {
     for (var serviceId in config.services) {
         let service = config.services[serviceId].service;
@@ -176,6 +178,8 @@ var buildAndStoreConfiguration = function (config) {
     window.cookiesRegulationConfig = config;
 };
 
+
+// Deletes cookies from unauthorised mandatory services
 var cleanCookies = function (preferences) {
     let enabledServices = [];
 
@@ -194,12 +198,13 @@ var cleanCookies = function (preferences) {
         let isEnabled = enabledServices.includes(serviceId)
 
         if (mandatory && !isEnabled) {
-            cleanServiceCookies(serviceId, service);
+            cleanServiceCookies(service);
         }
     }
 };
 
-var cleanServiceCookies = function (serviceId, service) {
+// Delete cookies from a service
+var cleanServiceCookies = function (service) {
     for (let identifierId in service.cookiesIdentifiers) {
         let identifier = service.cookiesIdentifiers[identifierId];
         let regex = new RegExp(identifier);
@@ -216,12 +221,14 @@ var cleanServiceCookies = function (serviceId, service) {
     }
 }
 
+// Delete a cookie by name
 var deleteCookie = function (cookieName) {
     document.cookie = cookieName + '=; expires=Thu, 01 Jan 2000 00:00:00 GMT; path=/;';
     document.cookie = cookieName + '=; expires=Thu, 01 Jan 2000 00:00:00 GMT; path=/; domain=.' + location.hostname + ';';
     document.cookie = cookieName + '=; expires=Thu, 01 Jan 2000 00:00:00 GMT; path=/; domain=.' + location.hostname.split('.').slice(-2).join('.') + ';';
 }
 
+// Returns the name of all cookies
 var getAllCookiesName = function () {
     return document.cookie.split(";")
         .map(test => test.split("=")[0].trim());

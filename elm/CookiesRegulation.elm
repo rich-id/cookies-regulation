@@ -105,20 +105,6 @@ init flags =
 
 decodeServices : Flags -> Services
 decodeServices flags =
-    let
-        isEnabled serviceId =
-            flags.preferences
-                |> List.filterMap
-                    (\( key, value ) ->
-                        if key == serviceId then
-                            Just value
-
-                        else
-                            Nothing
-                    )
-                |> List.head
-                |> Maybe.withDefault False
-    in
     flags.config.services
         |> Decode.decodeValue (Decode.dict serviceConfigurationDecoder)
         |> Result.withDefault Dict.empty
@@ -126,7 +112,7 @@ decodeServices flags =
             (\serviceId service ->
                 { service
                     | id = serviceId
-                    , enabled = isEnabled serviceId
+                    , enabled = isSerciceEnabledByPreferences flags.preferences serviceId
                 }
             )
 
