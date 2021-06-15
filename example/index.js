@@ -19,7 +19,7 @@ CookiesRegulation.init(
                 description:  'Système de gestion de balises',
                 conservation: '6 mois.',
                 service: 'googleTagManager',
-                options: {id: 'GTM-MKTMNSD'},
+                options: {id: 'GTM-TEST'},
             },
             cookieTest1: {
                 name:         'Cookie de test',
