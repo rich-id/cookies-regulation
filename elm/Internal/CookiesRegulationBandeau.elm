@@ -14,7 +14,7 @@ view model =
     htmlWhenNot (model.bandeauState == BandeauClosed) <|
         div
             [ class "cookies-regulation-bandeau"
-            , class "show" |> attrWhen (model.bandeauState == BandeauOpened)
+            , class "cookies-regulation-show" |> attrWhen (model.bandeauState == BandeauOpened)
             , Events.on "transitionend" (Decode.succeed InternalMsgCloseBandeau) |> attrWhen (model.bandeauState == BandeauFadeClose)
             ]
             [ div [ class "cookies-regulation-bandeau-contents" ]

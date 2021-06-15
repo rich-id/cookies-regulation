@@ -3,6 +3,7 @@ window.cookiesRegulationServices = {};
 //  Google Tag Manager
 window.cookiesRegulationServices.googleTagManager = {
     requiredOptions: ['id'],
+    cookiesIdentifiers: ['^ga.*$', '^_ga.*$', '^_gc.*$', '^_gi.*$', '^_hj.*$', '^__utma.*$', '^__utmb.*$', '^__utmc.*$', '^__utmt.*$', '^__utmz.*$', '^__gads.*$'],
     callback: function (options) {
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({

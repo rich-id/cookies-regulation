@@ -1,7 +1,7 @@
 module Internal.CookiesRegulationModal exposing (view)
 
 import Dict exposing (Dict)
-import Html exposing (Attribute, Html, a, b, div, h3, h4, p, span, text)
+import Html exposing (Attribute, Html, a, b, div, p, span, text)
 import Html.Attributes exposing (class, href, id, style, tabindex, target)
 import Html.Events as Events exposing (onClick)
 import Internal.Button as Button
@@ -16,10 +16,10 @@ view : Model -> Html Msg
 view model =
     div []
         [ div
-            [ class "cookies-regulation-modal fade"
-            , class "show" |> attrWhen (model.modalState == ModalOpened)
+            [ class "cookies-regulation-modal"
+            , class "cookies-regulation-show" |> attrWhen (model.modalState == ModalOpened)
             , style "height" "0" |> attrWhen (model.modalState == ModalClosed)
-            , Events.on "transitionend" (Decode.succeed MsgCloseModal) |> attrWhen (model.modalState == ModalFadeClose)
+            , Events.on "transitionend" (Decode.succeed InternalMsgCloseModal) |> attrWhen (model.modalState == ModalFadeClose)
             , tabindex -1
             ]
             [ div [ class "cookies-regulation-modal-dialog" ]
@@ -42,7 +42,7 @@ view model =
 modalHeaderView : Model -> Html Msg
 modalHeaderView model =
     div [ class "cookies-regulation-modal-header" ]
-        [ h3 [] [ text "Gérer mes cookies" ]
+        [ div [ class "cookies-regulation-h3" ] [ text "Gérer mes cookies" ]
         , htmlWhenNot model.needUserAction <|
             Picto.close [ onClick MsgCloseModal ]
         ]
@@ -86,7 +86,7 @@ servicesListView title_ services =
                 |> List.map (\service -> serviceView service)
     in
     div [ class "cookies-regulation-services" ]
-        ([ h4 [] [ text title_ ]
+        ([ div [ class "cookies-regulation-h4" ] [ text title_ ]
          ]
             ++ servicesView
         )

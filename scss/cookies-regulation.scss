@@ -7,7 +7,6 @@
     --rich-id-cookies-regulation-secondary: #2B2468;
     --rich-id-cookies-regulation-modal-backdrop: #FFFFFF;
 
-
     --rich-id-cookies-regulation-error: #DC3545;
     --rich-id-cookies-regulation-success: #198754;
 
@@ -24,18 +23,18 @@
     font-size: 16px;
     line-height: 22px;
 
-    h3, h4 {
+    .cookies-regulation-h3, .cookies-regulation-h4 {
         color: var(--rich-id-cookies-regulation-secondary);
         font-weight: bold;
         margin: 0;
     }
 
-    h3 {
+    .cookies-regulation-h3 {
         text-transform: uppercase;
         text-align: center;
     }
 
-    h4 {
+    .cookies-regulation-h4 {
         padding-bottom: 16px;
     }
 
@@ -96,12 +95,12 @@
         width: 100%;
         z-index: 2147483644;
 
-        &:not(.show) {
+        &:not(.cookies-regulation-show) {
             opacity: 0;
             pointer-events: none;
         }
 
-        &.show {
+        &.cookies-regulation-show {
             transform: none;
         }
 
@@ -111,6 +110,7 @@
             padding: 8px 32px;
 
             span.cookies-regulation-description {
+                color: var(--rich-id-cookies-regulation-white);
                 padding-bottom: 8px;
                 padding-top: 8px;
             }
@@ -173,12 +173,12 @@
         width: 100%;
         z-index: 2147483646;
 
-        &:not(.show) {
+        &:not(.cookies-regulation-show) {
             opacity: 0;
             pointer-events: none;
         }
 
-        &.show .cookies-regulation-modal-dialog {
+        &.cookies-regulation-show .cookies-regulation-modal-dialog {
             transform: none;
         }
 

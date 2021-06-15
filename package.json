@@ -1,5 +1,5 @@
 {
-  "name": "cookies-regulation",
+  "name": "@rich-id/cookies-regulation",
   "version": "1.0.0",
   "scripts": {
     "build": "parcel build js/cookies-regulation.js",

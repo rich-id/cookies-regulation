@@ -1,5 +1,5 @@
-import './cookies-regulation-services';
 import './../scss/cookies-regulation.scss';
+import './cookies-regulation-services';
 import { Elm } from './../elm/CookiesRegulation.elm';
 
 module.exports = {
@@ -9,12 +9,14 @@ module.exports = {
         let container = document.createElement('div');
         document.body.appendChild(container);
 
-        const references = this.getPreferences();
+        const preferences = this.getPreferences();
+
+        cleanCookies(preferences);
 
         window.cookiesRegulationBlock = Elm.CookiesRegulation.init({
             node: container,
             flags: {
-                preferences: references,
+                preferences: preferences,
                 config: config
             },
         });
@@ -50,34 +52,15 @@ module.exports = {
         service.initializationCallback();
     },
 
-    removeService: function (serviceName) {
-        const service = window.cookiesRegulationConfig.services[serviceName];
-
-        if (!service) {
-            console.error('Failed to get the service "' + serviceName + '". Please check your configuration.');
-            return;
-        }
-
-        service.cookieDomains.forEach(function (domain) {
-            browser.cookies.get({url: domain}).then(function (cookie) {
-                if (!cookie) {
-                    return;
-                }
-
-                browser.cookies.remove(cookie);
-            });
-        });
-    },
-
     openModal: function () {
         window.cookiesRegulationBlock.ports.openModal.send(null);
     },
 
     setPreferences: function(data) {
-        var preferences = data[0];
-        var reloadPage = data[1];
+        let preferences = data[0];
+        let reloadPage = data[1];
 
-        var encodedPreferences = encodeCookiePreferencesData(preferences);
+        let encodedPreferences = encodeCookiePreferencesData(preferences);
 
         if (encodedPreferences === null) {
             return;
@@ -97,7 +80,7 @@ module.exports = {
     },
 
     getPreferences: function() {
-        var cookie = getReferencesCookie();
+        let cookie = getReferencesCookie();
 
         if (cookie === null) {
             return [];
@@ -107,10 +90,10 @@ module.exports = {
 }
 
 var getReferencesCookie = function () {
-    var cookieArr = document.cookie.split(";");
+    let cookieArr = document.cookie.split(";");
 
-    for(var i = 0; i < cookieArr.length; i++) {
-        var cookiePair = cookieArr[i].split("=");
+    for(let cookieId in cookieArr) {
+        let cookiePair = cookieArr[cookieId].split("=");
 
         if (cookiePair[0].trim() === 'cookie_preferences') {
             return decodeURIComponent(cookiePair[1]);
@@ -139,7 +122,7 @@ var decodeCookiePreferencesData = function (encodedPreferences) {
 var buildAndStoreConfiguration = function (config) {
     for (var serviceId in config.services) {
         let service = config.services[serviceId].service;
-        var options = config.services[serviceId].options ?? {};
+        let options = config.services[serviceId].options ? config.services[serviceId].options : {};
 
         if (typeof service === 'undefined') {
             continue;
@@ -147,21 +130,22 @@ var buildAndStoreConfiguration = function (config) {
 
         if (typeof window.cookiesRegulationServices[service] === 'undefined') {
             console.log('No auto-configured service exists with the ' + service + ' id');
+
             delete config.services[serviceId];
             continue;
         }
 
-        var definedOptions = [];
+        let definedOptions = [];
 
-        for (var option in options) {
+        for (let option in options) {
             definedOptions.push(option);
         }
 
-        var requiredOptions = window.cookiesRegulationServices[service].requiredOptions;
-        var hasMissingOption = false;
+        let requiredOptions = window.cookiesRegulationServices[service].requiredOptions;
+        let hasMissingOption = false;
 
-        for(var i = 0; i < requiredOptions.length; i++) {
-            var requiredOption = requiredOptions[i];
+        for(let i = 0; i < requiredOptions.length; i++) {
+            let requiredOption = requiredOptions[i];
 
             if (!definedOptions.includes(requiredOption)) {
                 hasMissingOption = true;
@@ -180,6 +164,10 @@ var buildAndStoreConfiguration = function (config) {
                 window.cookiesRegulationServices[service].callback(options);
             };
 
+            if (typeof config.services[serviceId].cookiesIdentifiers === 'undefined') {
+                config.services[serviceId].cookiesIdentifiers = window.cookiesRegulationServices[service].cookiesIdentifiers;
+            }
+
             delete config.services[serviceId].service;
             delete config.services[serviceId].options;
         }
@@ -187,3 +175,54 @@ var buildAndStoreConfiguration = function (config) {
 
     window.cookiesRegulationConfig = config;
 };
+
+var cleanCookies = function (preferences) {
+    let enabledServices = [];
+
+    for (let preferenceId in preferences) {
+        let preference = preferences[preferenceId];
+
+        if (preference[1]) {
+            enabledServices.push(preference[0])
+        }
+    }
+
+    for (let serviceId in window.cookiesRegulationConfig.services) {
+        let service = window.cookiesRegulationConfig.services[serviceId];
+
+        let mandatory = typeof service.mandatory !== 'undefined' && service.mandatory;
+        let isEnabled = enabledServices.includes(serviceId)
+
+        if (mandatory && !isEnabled) {
+            cleanServiceCookies(serviceId, service);
+        }
+    }
+};
+
+var cleanServiceCookies = function (serviceId, service) {
+    for (let identifierId in service.cookiesIdentifiers) {
+        let identifier = service.cookiesIdentifiers[identifierId];
+        let regex = new RegExp(identifier);
+
+        let cookiesName = getAllCookiesName();
+
+        for (let cookieId in cookiesName) {
+            let cookieName = cookiesName[cookieId];
+
+            if (regex.test(cookieName)) {
+                deleteCookie(cookieName);
+            }
+        }
+    }
+}
+
+var deleteCookie = function (cookieName) {
+    document.cookie = cookieName + '=; expires=Thu, 01 Jan 2000 00:00:00 GMT; path=/;';
+    document.cookie = cookieName + '=; expires=Thu, 01 Jan 2000 00:00:00 GMT; path=/; domain=.' + location.hostname + ';';
+    document.cookie = cookieName + '=; expires=Thu, 01 Jan 2000 00:00:00 GMT; path=/; domain=.' + location.hostname.split('.').slice(-2).join('.') + ';';
+}
+
+var getAllCookiesName = function () {
+    return document.cookie.split(";")
+        .map(test => test.split("=")[0].trim());
+}
