@@ -1,0 +1,7 @@
+version: '3.7'
+services:
+    application:
+        user: '1001:116'
+        environment:
+            - ELM_HOME=/app/.elm
+            - YARN_CACHE_FOLDER=/app/.yarn

@@ -1,0 +1,56 @@
+name: Publish
+on:
+    push:
+        tags:
+            - '*'
+
+jobs:
+    publish-release:
+        name: Publish release
+        runs-on: ubuntu-18.04
+        steps:
+            - uses: actions/checkout@v2
+              with:
+                  persist-credentials: false
+
+            - name: Start docker 🔧
+              run: docker network create proxy && docker-compose -f docker-compose.yml -f .github/docker-compose.yml up -d
+
+            - name: Install the dependencies 🔧
+              run: docker-compose exec -T application yarn install
+
+            - name: Build
+              run: docker-compose exec -T application yarn build-release
+
+            - name: Upload Js to release
+              uses: svenstaro/upload-release-action@v2
+              with:
+                repo_token: ${{ secrets.GITHUB_TOKEN }}
+                file: dist/cookies-regulation.js
+                asset_name: cookies-regulation.js
+                tag: ${{ github.ref }}
+
+            - name: Upload Css to release
+              uses: svenstaro/upload-release-action@v2
+              with:
+                  repo_token: ${{ secrets.GITHUB_TOKEN }}
+                  file: dist/cookies-regulation.css
+                  asset_name: cookies-regulation.css
+                  tag: ${{ github.ref }}
+
+    publish-registry:
+        name: Publish registry
+        runs-on: ubuntu-18.04
+        steps:
+            - uses: actions/checkout@v2
+              with:
+                  persist-credentials: false
+
+            - name: Start docker 🔧
+              run: docker network create proxy && docker-compose -f docker-compose.yml -f .github/docker-compose.yml up -d
+
+            - name: Install the dependencies 🔧
+              run: docker-compose exec -T application yarn install
+
+            - name: Build
+              run: docker-compose exec -T application yarn build && docker-compose exec -T application yarn pack
