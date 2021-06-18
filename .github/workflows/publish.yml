@@ -53,4 +53,9 @@ jobs:
               run: docker-compose exec -T application yarn install
 
             - name: Build
-              run: docker-compose exec -T application yarn build && docker-compose exec -T application yarn pack
+              run: docker-compose exec -T application yarn build
+
+            - name: Publish to NPM
+              uses: JS-DevTools/npm-publish@v1
+              with:
+                  token: ${{ secrets.NPM_TOKEN }}
