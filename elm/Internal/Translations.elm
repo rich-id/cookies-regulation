@@ -1,4 +1,4 @@
-module Internal.Translations exposing (Local(..), bandeau_cookies_regulation, modal_accept_all, modal_cookie_conservation, modal_cookies_with_agreement, modal_cookies_without_agreement, modal_reject_all, modal_related_companies_link_label, modal_related_companies_use_cookies, modal_save_my_choices, modal_title, modal_user_choices_change, modal_user_choices_conservation_duration)
+module Internal.Translations exposing (Local(..), bandeau_cookies_regulation, bandeau_customise, modal_accept_all, modal_cookie_conservation, modal_cookies_with_agreement, modal_cookies_without_agreement, modal_reject_all, modal_related_companies_link_label, modal_related_companies_use_cookies, modal_save_my_choices, modal_title, modal_user_choices_change, modal_user_choices_conservation_duration)
 
 
 type Local
@@ -14,6 +14,16 @@ bandeau_cookies_regulation local =
 
         Fr ->
             "Contrôlez les cookies que nous utilisons pour ce site..."
+
+
+bandeau_customise : Local -> String
+bandeau_customise local =
+    case local of
+        En ->
+            "Customise"
+
+        Fr ->
+            "Personnaliser"
 
 
 modal_accept_all : Local -> String

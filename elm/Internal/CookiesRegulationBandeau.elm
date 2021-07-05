@@ -20,9 +20,9 @@ view model =
             ]
             [ div [ class "cookies-regulation-bandeau-contents" ]
                 [ span [ class "cookies-regulation-description" ] [ text <| Trans.bandeau_cookies_regulation model.local ]
-                , Button.view { label = "Personnaliser", type_ = Button.Secondary, disabled = False, msg = MsgOpenModal }
-                , Button.view { label = "Tout accepter", type_ = Button.Primary, disabled = False, msg = MsgBandeauAcceptAll }
-                , Button.view { label = "Tout refuser", type_ = Button.Primary, disabled = False, msg = MsgBandeauRejectAll }
+                , Button.view { label = Trans.bandeau_customise model.local, type_ = Button.Secondary, disabled = False, msg = MsgOpenModal }
+                , Button.view { label = Trans.modal_accept_all model.local, type_ = Button.Primary, disabled = False, msg = MsgBandeauAcceptAll }
+                , Button.view { label = Trans.modal_reject_all model.local, type_ = Button.Primary, disabled = False, msg = MsgBandeauRejectAll }
                 , a
                     [ class "cookies-regulation-privacy-policy"
                     , href model.privacyPolicy.url
