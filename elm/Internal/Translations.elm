@@ -1,14 +1,14 @@
-module Internal.Translations exposing (Local(..), bandeau_cookies_regulation, bandeau_customise, modal_accept_all, modal_cookie_conservation, modal_cookies_with_agreement, modal_cookies_without_agreement, modal_reject_all, modal_related_companies_link_label, modal_related_companies_use_cookies, modal_save_my_choices, modal_title, modal_user_choices_change, modal_user_choices_conservation_duration)
+module Internal.Translations exposing (Locale(..), banner_cookies_regulation, banner_customise, modal_accept_all, modal_cookie_conservation, modal_cookies_with_agreement, modal_cookies_without_agreement, modal_reject_all, modal_related_companies_link_label, modal_related_companies_use_cookies, modal_save_my_choices, modal_title, modal_user_choices_change, modal_user_choices_conservation_duration)
 
 
-type Local
+type Locale
     = En
     | Fr
 
 
-bandeau_cookies_regulation : Local -> String
-bandeau_cookies_regulation local =
-    case local of
+banner_cookies_regulation : Locale -> String
+banner_cookies_regulation locale =
+    case locale of
         En ->
             "Check the cookies we use for this site..."
 
@@ -16,9 +16,9 @@ bandeau_cookies_regulation local =
             "Contrôlez les cookies que nous utilisons pour ce site..."
 
 
-bandeau_customise : Local -> String
-bandeau_customise local =
-    case local of
+banner_customise : Locale -> String
+banner_customise locale =
+    case locale of
         En ->
             "Customise"
 
@@ -26,9 +26,9 @@ bandeau_customise local =
             "Personnaliser"
 
 
-modal_accept_all : Local -> String
-modal_accept_all local =
-    case local of
+modal_accept_all : Locale -> String
+modal_accept_all locale =
+    case locale of
         En ->
             "Accept all"
 
@@ -36,9 +36,9 @@ modal_accept_all local =
             "Tout accepter"
 
 
-modal_cookie_conservation : Local -> String
-modal_cookie_conservation local =
-    case local of
+modal_cookie_conservation : Locale -> String
+modal_cookie_conservation locale =
+    case locale of
         En ->
             "Conservation :"
 
@@ -46,9 +46,9 @@ modal_cookie_conservation local =
             "Conservation :"
 
 
-modal_cookies_with_agreement : Local -> String
-modal_cookies_with_agreement local =
-    case local of
+modal_cookies_with_agreement : Locale -> String
+modal_cookies_with_agreement locale =
+    case locale of
         En ->
             "Cookies requiring your consent"
 
@@ -56,9 +56,9 @@ modal_cookies_with_agreement local =
             "Cookies nécessitant votre consentement"
 
 
-modal_cookies_without_agreement : Local -> String
-modal_cookies_without_agreement local =
-    case local of
+modal_cookies_without_agreement : Locale -> String
+modal_cookies_without_agreement locale =
+    case locale of
         En ->
             "Cookies exempt from consent"
 
@@ -66,9 +66,9 @@ modal_cookies_without_agreement local =
             "Gérer mes cookies"
 
 
-modal_reject_all : Local -> String
-modal_reject_all local =
-    case local of
+modal_reject_all : Locale -> String
+modal_reject_all locale =
+    case locale of
         En ->
             "Refuse all"
 
@@ -76,11 +76,11 @@ modal_reject_all local =
             "Tout refuser"
 
 
-modal_related_companies_link_label : Int -> Local -> String
-modal_related_companies_link_label count local =
-    case ( count, local ) of
+modal_related_companies_link_label : Int -> Locale -> String
+modal_related_companies_link_label count locale =
+    case ( count, locale ) of
         ( 0, En ) ->
-            "No third party company"
+            "No third party companies"
 
         ( 0, Fr ) ->
             "Aucune société tierce"
@@ -98,9 +98,9 @@ modal_related_companies_link_label count local =
             String.fromInt count ++ " sociétés tierces"
 
 
-modal_related_companies_use_cookies : Int -> { website : String } -> Local -> String
-modal_related_companies_use_cookies count data local =
-    case ( count, local ) of
+modal_related_companies_use_cookies : Int -> { website : String } -> Locale -> String
+modal_related_companies_use_cookies count data locale =
+    case ( count, locale ) of
         ( 0, En ) ->
             "uses cookies on " ++ data.website
 
@@ -120,9 +120,9 @@ modal_related_companies_use_cookies count data local =
             "utilisent des cookies sur " ++ data.website
 
 
-modal_save_my_choices : Local -> String
-modal_save_my_choices local =
-    case local of
+modal_save_my_choices : Locale -> String
+modal_save_my_choices locale =
+    case locale of
         En ->
             "Save my choices"
 
@@ -130,9 +130,9 @@ modal_save_my_choices local =
             "Mémoriser mes choix"
 
 
-modal_title : Local -> String
-modal_title local =
-    case local of
+modal_title : Locale -> String
+modal_title locale =
+    case locale of
         En ->
             "Manage my cookies"
 
@@ -140,9 +140,9 @@ modal_title local =
             "Gérer mes cookies"
 
 
-modal_user_choices_change : Local -> String
-modal_user_choices_change local =
-    case local of
+modal_user_choices_change : Locale -> String
+modal_user_choices_change locale =
+    case locale of
         En ->
             "You can change your mind at any time by clicking on the « Cookies » button at the bottom of the site."
 
@@ -150,9 +150,9 @@ modal_user_choices_change local =
             "Vous pouvez changer d’avis à tout moment en cliquant sur le bouton « Cookies » au bas du site."
 
 
-modal_user_choices_conservation_duration : Local -> String
-modal_user_choices_conservation_duration local =
-    case local of
+modal_user_choices_conservation_duration : Locale -> String
+modal_user_choices_conservation_duration locale =
+    case locale of
         En ->
             "We keep your choices for 6 months."
 

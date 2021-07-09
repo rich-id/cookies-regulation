@@ -43,6 +43,6 @@ CookiesRegulation.init(
                 mandatory:    false,
             }
         },
-        local: 'en',
+        locale: 'en',
     }
 );

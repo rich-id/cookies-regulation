@@ -83,7 +83,7 @@ window.CookiesRegulation = require('@rich-id/cookies-regulation');
                     mandatory:    false,
                 }
             },
-            local: 'en', /* Local: en|fr */
+            locale: 'en', /* Local: en|fr */
         }
     );
 </script>

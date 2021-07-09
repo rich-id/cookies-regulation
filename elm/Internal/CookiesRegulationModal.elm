@@ -9,7 +9,7 @@ import Internal.CookiesRegulationData exposing (..)
 import Internal.Helpers exposing (..)
 import Internal.Picto as Picto
 import Internal.SwitchCheckbox as SwitchCheckbox
-import Internal.Translations as Trans exposing (Local)
+import Internal.Translations as Trans exposing (Locale)
 import Json.Decode as Decode
 
 
@@ -43,7 +43,7 @@ view model =
 modalHeaderView : Model -> Html Msg
 modalHeaderView model =
     div [ class "cookies-regulation-modal-header" ]
-        [ div [ class "cookies-regulation-h3" ] [ text (Trans.modal_title model.local) ]
+        [ div [ class "cookies-regulation-h3" ] [ text (Trans.modal_title model.locale) ]
         , htmlWhenNot model.needUserAction <|
             Picto.close [ onClick MsgCloseModal ]
         ]
@@ -64,8 +64,8 @@ modalBodyView model =
                 , privacyPolicyLinkView model
                 , globalActionButtonsView model
                 ]
-            , servicesListView model.local (Trans.modal_cookies_with_agreement model.local) model.mandatoryServices
-            , servicesListView model.local (Trans.modal_cookies_without_agreement model.local) model.notMandatoryServices
+            , servicesListView model.locale (Trans.modal_cookies_with_agreement model.locale) model.mandatoryServices
+            , servicesListView model.locale (Trans.modal_cookies_without_agreement model.locale) model.notMandatoryServices
             ]
         ]
 
@@ -74,7 +74,7 @@ modalFooterView : Model -> Html Msg
 modalFooterView model =
     div [ class "cookies-regulation-modal-footer" ]
         [ Button.view
-            { label = Trans.modal_save_my_choices model.local
+            { label = Trans.modal_save_my_choices model.locale
             , type_ = Button.Primary
             , disabled = not (hasAcceptationChange model) && not model.needUserAction
             , msg = MsgSave
@@ -82,14 +82,14 @@ modalFooterView model =
         ]
 
 
-servicesListView : Local -> String -> Services -> Html Msg
-servicesListView local title_ services =
+servicesListView : Locale -> String -> Services -> Html Msg
+servicesListView locale title_ services =
     let
         servicesView =
             services
                 |> Dict.values
                 |> List.sortBy .name
-                |> List.map (\service -> serviceView local service)
+                |> List.map (\service -> serviceView locale service)
     in
     div [ class "cookies-regulation-services" ]
         ([ div [ class "cookies-regulation-h4" ] [ text title_ ]
@@ -98,8 +98,8 @@ servicesListView local title_ services =
         )
 
 
-serviceView : Local -> Service -> Html Msg
-serviceView local service =
+serviceView : Locale -> Service -> Html Msg
+serviceView locale service =
     let
         description =
             Maybe.withDefault "" service.description
@@ -118,7 +118,7 @@ serviceView local service =
             [ div [] [ span [ onClick (MsgUpdateServiceStatus service.id) |> attrWhen service.mandatory ] [ text service.name ] ]
             , htmlWhenNotEmpty description (\message -> div [ class "cookies-regulation-service-description" ] [ text message ])
             , div [ class "cookies-regulation-service-conservation" ]
-                [ b [] [ text (Trans.modal_cookie_conservation local) ]
+                [ b [] [ text (Trans.modal_cookie_conservation locale) ]
                 , text service.conservation
                 ]
             ]
@@ -138,8 +138,8 @@ cookieDurationView model =
     div [ class "cookies-regulation-information" ]
         [ Picto.clock
         , div []
-            [ div [] [ text (Trans.modal_user_choices_conservation_duration model.local) ]
-            , div [] [ text (Trans.modal_user_choices_change model.local) ]
+            [ div [] [ text (Trans.modal_user_choices_conservation_duration model.locale) ]
+            , div [] [ text (Trans.modal_user_choices_change model.locale) ]
             ]
         ]
 
@@ -157,6 +157,6 @@ privacyPolicyLinkView model =
 globalActionButtonsView : Model -> Html Msg
 globalActionButtonsView model =
     div [ class "cookies-regulation-modal-body-content-actions" ]
-        [ Button.view { label = Trans.modal_accept_all model.local, type_ = Button.Primary, disabled = False, msg = MsgModalAcceptAll }
-        , Button.view { label = Trans.modal_reject_all model.local, type_ = Button.Primary, disabled = False, msg = MsgModalRejectAll }
+        [ Button.view { label = Trans.modal_accept_all model.locale, type_ = Button.Primary, disabled = False, msg = MsgModalAcceptAll }
+        , Button.view { label = Trans.modal_reject_all model.locale, type_ = Button.Primary, disabled = False, msg = MsgModalRejectAll }
         ]

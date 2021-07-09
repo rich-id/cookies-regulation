@@ -141,6 +141,6 @@ relatedCompaniesLabel model =
             else
                 model.modal.relatedCompaniesCount
     in
-    [ a [ href model.modal.relatedCompaniesPrivacyPolicyUrl ] [ text (Trans.modal_related_companies_link_label nbCompanies model.local) ]
-    , text (Trans.modal_related_companies_use_cookies nbCompanies { website = model.website } model.local)
+    [ a [ href model.modal.relatedCompaniesPrivacyPolicyUrl ] [ text (Trans.modal_related_companies_link_label nbCompanies model.locale) ]
+    , text (Trans.modal_related_companies_use_cookies nbCompanies { website = model.website } model.locale)
     ]
