@@ -83,7 +83,12 @@ window.CookiesRegulation = require('@rich-id/cookies-regulation');
                     mandatory:    false,
                 }
             },
-            locale: 'en', /* Local: en|fr */
+            locale: 'en', /* Local: en|fr */,
+            decisionLogCallback: (decision) => {
+                // Code to log decision metadata on the backend which is a GDPR requirement
+                // The decision object contains user choices, the date the decision was made
+                // and an uuid to allow anonymous storage on the backend.
+             }
         }
     );
 </script>
