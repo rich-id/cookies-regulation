@@ -1,4 +1,4 @@
-module Internal.Helpers exposing (attrWhen, buildPreferencesForSave, filterMandatoryServices, filterNotMandatoryServices, getEnabledMandatoryServices, getEnabledMandatoryServicesByPreferences, getRejectedMandatoryServices, hasAcceptationChange, hasRejectedService, htmlWhen, htmlWhenNot, htmlWhenNotEmpty, isSerciceEnabledByPreferences, relatedCompaniesLabel, updateService)
+module Internal.Helpers exposing (attrWhen, buildPreferencesForSave, filterMandatoryServices, filterNotMandatoryServices, getEnabledMandatoryServices, getEnabledMandatoryServicesByPreferences, getRejectedMandatoryServices, hasAcceptationChange, hasRejectedService, htmlJust, htmlWhen, htmlWhenNot, htmlWhenNotEmpty, isSerciceEnabledByPreferences, relatedCompaniesLabel, updateService)
 
 import Dict
 import Html exposing (Attribute, Html, a, text)
@@ -37,6 +37,16 @@ htmlWhenNotEmpty message view_ =
 
     else
         view_ message
+
+
+htmlJust : Maybe a -> (a -> Html msg) -> Html msg
+htmlJust maybeA html_ =
+    case maybeA of
+        Just a ->
+            html_ a
+
+        Nothing ->
+            text ""
 
 
 updateService : Services -> String -> (Service -> Service) -> Services

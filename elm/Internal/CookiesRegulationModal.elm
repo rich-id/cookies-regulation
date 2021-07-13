@@ -79,6 +79,8 @@ modalFooterView model =
             , disabled = not (hasAcceptationChange model) && not model.needUserAction
             , msg = MsgSave
             }
+        , htmlJust model.lastDecisionMetadata <|
+            decisionMetadataView
         ]
 
 
@@ -159,4 +161,12 @@ globalActionButtonsView model =
     div [ class "cookies-regulation-modal-body-content-actions" ]
         [ Button.view { label = Trans.modal_accept_all model.locale, type_ = Button.Primary, disabled = False, msg = MsgModalAcceptAll }
         , Button.view { label = Trans.modal_reject_all model.locale, type_ = Button.Primary, disabled = False, msg = MsgModalRejectAll }
+        ]
+
+
+decisionMetadataView : DecisionMetadata -> Html msg
+decisionMetadataView metadata =
+    div [ class "cookies-regulation-decision-metadata" ]
+        [ div [] [ text metadata.uuid ]
+        , div [] [ text metadata.date ]
         ]

@@ -1,6 +1,6 @@
 {
   "name": "@rich-id/cookies-regulation",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "scripts": {
     "build": "parcel build js/cookies-regulation.js",
     "build-release": "parcel build --no-source-maps js/cookies-regulation.js",
@@ -20,5 +20,8 @@
     "node-elm-compiler": "^5.0.4",
     "parcel": "^2.0.0-beta.3.1",
     "sass": "^1.26.2"
+  },
+  "dependencies": {
+    "uuid": "^8.3.2"
   }
 }

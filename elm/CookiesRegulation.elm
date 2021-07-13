@@ -31,6 +31,9 @@ port setPreferences : ( Preferences, Bool ) -> Cmd msg
 port initializeService : String -> Cmd msg
 
 
+port receiveDecisionMetadata : (DecisionMetadata -> msg) -> Sub msg
+
+
 
 -- Ports Sub
 
@@ -59,7 +62,12 @@ subscriptions model =
                 _ ->
                     Sub.none
     in
-    Sub.batch [ onResize InternalMsgResize, bannerStateSub, openModal (\_ -> MsgOpenModal) ]
+    Sub.batch
+        [ onResize InternalMsgResize
+        , bannerStateSub
+        , openModal (\_ -> MsgOpenModal)
+        , receiveDecisionMetadata InternalMsgReceiveDecisionMetadata
+        ]
 
 
 
@@ -99,6 +107,7 @@ init flags =
       , modalState = ModalClosed
       , modalBodyScrollable = False
       , locale = decodeLocale flags.config.locale
+      , lastDecisionMetadata = flags.decisionMetadata
       }
     , initializeServices services enabledMandatoryServices
     )
@@ -208,6 +217,9 @@ update msg model =
 
                 _ ->
                     ( model, Cmd.none )
+
+        InternalMsgReceiveDecisionMetadata decisionMetadata ->
+            ( { model | lastDecisionMetadata = Just decisionMetadata }, Cmd.none )
 
 
 

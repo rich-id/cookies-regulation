@@ -1,4 +1,4 @@
-module Internal.CookiesRegulationData exposing (BannerState(..), Flags, FlagsConfiguration, ModalState(..), Model, Msg(..), Preferences, PrivacyPolicy, Service, ServiceId, Services, decodeLocale, serviceConfigurationDecoder)
+module Internal.CookiesRegulationData exposing (BannerState(..), DecisionMetadata, Flags, FlagsConfiguration, ModalState(..), Model, Msg(..), Preferences, PrivacyPolicy, Service, ServiceId, Services, decodeLocale, serviceConfigurationDecoder)
 
 import Browser.Dom exposing (Error, Viewport)
 import Dict exposing (Dict)
@@ -14,6 +14,7 @@ import Json.Decode.Pipeline as Decode
 type alias Flags =
     { config : FlagsConfiguration
     , preferences : Preferences
+    , decisionMetadata : Maybe DecisionMetadata
     }
 
 
@@ -42,6 +43,7 @@ type alias Model =
     , modalState : ModalState
     , modalBodyScrollable : Bool
     , locale : Locale
+    , lastDecisionMetadata : Maybe DecisionMetadata
     }
 
 
@@ -81,6 +83,12 @@ type alias Preference =
     ( ServiceId, Bool )
 
 
+type alias DecisionMetadata =
+    { uuid : String
+    , date : String
+    }
+
+
 type alias ServiceId =
     String
 
@@ -116,6 +124,7 @@ type Msg
     | InternalMsgCloseModal
     | InternalMsgResize Int Int
     | InternalMsgModalContentSize (Result Error Viewport)
+    | InternalMsgReceiveDecisionMetadata DecisionMetadata
 
 
 

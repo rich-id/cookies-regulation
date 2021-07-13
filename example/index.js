@@ -44,5 +44,6 @@ CookiesRegulation.init(
             }
         },
         locale: 'en',
+        decisionLogCallback: (decision) => alert(decision)
     }
 );
