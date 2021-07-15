@@ -17,7 +17,7 @@ jobs:
               run: docker network create proxy && docker-compose -f docker-compose.yml -f .github/docker-compose.yml up -d
 
             - name: Install the dependencies 🔧
-              run: docker-compose exec -T application yarn install
+              run: docker-compose exec -T -e CYPRESS_INSTALL_BINARY=0 application yarn install
 
             - name: Build
               run: docker-compose exec -T application yarn build-release
@@ -50,7 +50,7 @@ jobs:
               run: docker network create proxy && docker-compose -f docker-compose.yml -f .github/docker-compose.yml up -d
 
             - name: Install the dependencies 🔧
-              run: docker-compose exec -T application yarn install
+              run: docker-compose exec -T -e CYPRESS_INSTALL_BINARY=0 application yarn install
 
             - name: Build
               run: docker-compose exec -T application yarn build
