@@ -1,8 +1,8 @@
-module Internal.CookiesRegulationData exposing (BandeauState(..), Flags, FlagsConfiguration, ModalState(..), Model, Msg(..), Preferences, PrivacyPolicy, Service, ServiceId, Services, decodeLocal, serviceConfigurationDecoder)
+module Internal.CookiesRegulationData exposing (BannerState(..), DecisionMetadata, Flags, FlagsConfiguration, ModalState(..), Model, Msg(..), Preferences, PrivacyPolicy, Service, ServiceId, Services, decodeLocale, serviceConfigurationDecoder)
 
 import Browser.Dom exposing (Error, Viewport)
 import Dict exposing (Dict)
-import Internal.Translations exposing (Local(..))
+import Internal.Translations exposing (Locale(..))
 import Json.Decode as Decode
 import Json.Decode.Pipeline as Decode
 
@@ -14,6 +14,7 @@ import Json.Decode.Pipeline as Decode
 type alias Flags =
     { config : FlagsConfiguration
     , preferences : Preferences
+    , decisionMetadata : Maybe DecisionMetadata
     }
 
 
@@ -22,7 +23,7 @@ type alias FlagsConfiguration =
     , privacyPolicy : PrivacyPolicy
     , modal : ModalConfiguration
     , services : Decode.Value
-    , local : String
+    , locale : String
     }
 
 
@@ -38,10 +39,11 @@ type alias Model =
     , notMandatoryServices : Services
     , enabledMandatoryServices : List ServiceId
     , needUserAction : Bool
-    , bandeauState : BandeauState
+    , bannerState : BannerState
     , modalState : ModalState
     , modalBodyScrollable : Bool
-    , local : Local
+    , locale : Locale
+    , lastDecisionMetadata : Maybe DecisionMetadata
     }
 
 
@@ -81,6 +83,12 @@ type alias Preference =
     ( ServiceId, Bool )
 
 
+type alias DecisionMetadata =
+    { uuid : String
+    , date : String
+    }
+
+
 type alias ServiceId =
     String
 
@@ -91,11 +99,11 @@ type ModalState
     | ModalFadeClose
 
 
-type BandeauState
-    = BandeauNeedOpen
-    | BandeauOpened
-    | BandeauFadeClose
-    | BandeauClosed
+type BannerState
+    = BannerNeedOpen
+    | BannerOpened
+    | BannerFadeClose
+    | BannerClosed
 
 
 
@@ -105,17 +113,18 @@ type BandeauState
 type Msg
     = MsgOpenModal
     | MsgCloseModal
-    | MsgBandeauAcceptAll
-    | MsgBandeauRejectAll
+    | MsgBannerAcceptAll
+    | MsgBannerRejectAll
     | MsgModalAcceptAll
     | MsgModalRejectAll
     | MsgUpdateServiceStatus String
     | MsgSave
-    | InternalMsgOpenBandeau
-    | InternalMsgCloseBandeau
+    | InternalMsgOpenBanner
+    | InternalMsgCloseBanner
     | InternalMsgCloseModal
     | InternalMsgResize Int Int
     | InternalMsgModalContentSize (Result Error Viewport)
+    | InternalMsgReceiveDecisionMetadata DecisionMetadata
 
 
 
@@ -133,9 +142,9 @@ serviceConfigurationDecoder =
         |> Decode.hardcoded False
 
 
-decodeLocal : String -> Local
-decodeLocal local =
-    case local of
+decodeLocale : String -> Locale
+decodeLocale locale =
+    case locale of
         "fr" ->
             Fr
 

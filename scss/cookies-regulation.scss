@@ -1,5 +1,6 @@
 :root {
     --rich-id-cookies-regulation-dark: #000000;
+    --rich-id-cookies-regulation-dark-secondary: #808080;
     --rich-id-cookies-regulation-white: #FFFFFF;
 
     --rich-id-cookies-regulation-primary: #e6007e;
@@ -10,7 +11,7 @@
     --rich-id-cookies-regulation-error: #DC3545;
     --rich-id-cookies-regulation-success: #198754;
 
-    --rich-id-cookies-regulation-bandeau-animation-duration: .6s;
+    --rich-id-cookies-regulation-banner-animation-duration: .6s;
 }
 
 .cookies-regulation-modal-open {
@@ -84,13 +85,13 @@
         }
     }
 
-    .cookies-regulation-bandeau {
+    .cookies-regulation-banner {
         background: var(--rich-id-cookies-regulation-secondary);
         bottom: 0;
         left: 0;
         position: fixed;
         text-align: center;
-        transition: opacity var(--rich-id-cookies-regulation-bandeau-animation-duration) linear, transform var(--rich-id-cookies-regulation-bandeau-animation-duration) ease-out;
+        transition: opacity var(--rich-id-cookies-regulation-banner-animation-duration) linear, transform var(--rich-id-cookies-regulation-banner-animation-duration) ease-out;
         transform: translate(0, 50px);
         width: 100%;
         z-index: 2147483644;
@@ -104,7 +105,7 @@
             transform: none;
         }
 
-        .cookies-regulation-bandeau-contents {
+        .cookies-regulation-banner-contents {
             display: flex;
             flex-direction: column;
             padding: 8px 32px;
@@ -297,7 +298,7 @@
                         }
 
                         .cookies-regulation-service-conservation {
-                            color: #808080;
+                            color: var(--rich-id-cookies-regulation-dark-secondary);
                             font-size: 12px;
                             line-height: 16px;
 
@@ -312,6 +313,17 @@
                     padding-bottom: 16px;
                     padding-top: 16px;
                     text-align: center;
+                    position: relative;
+
+                    .cookies-regulation-decision-metadata {
+                        color: var(--rich-id-cookies-regulation-dark-secondary);
+                        font-size: 10px;
+                        left: 10px;
+                        line-height: 12px;
+                        position: absolute;
+                        text-align: left;
+                        bottom: 26px;
+                    }
                 }
             }
         }

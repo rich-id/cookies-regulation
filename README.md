@@ -45,7 +45,7 @@ window.CookiesRegulation = require('@rich-id/cookies-regulation');
         {
             website: 'Cookies Regulation', /* Name of your site (1) */
             privacyPolicy: {
-                url: 'https://example.com/privacy', /* Privacy policy url (2) */ 
+                url: 'https://example.com/privacy', /* Privacy policy url (2) */
                 label: 'Privacy Policy', /* Privacy policy link label (2) */
                 openInNewWindow: true, /* Does the link open in a new window (2) */
             },
@@ -83,7 +83,12 @@ window.CookiesRegulation = require('@rich-id/cookies-regulation');
                     mandatory:    false,
                 }
             },
-            local: 'en', /* Local: en|fr */
+            locale: 'en', /* Local: en|fr */,
+            decisionLogCallback: (decision) => {
+                // Code to log decision metadata on the backend which is a GDPR requirement
+                // The decision object contains user choices, the date the decision was made
+                // and an uuid to allow anonymous storage on the backend.
+             }
         }
     );
 </script>
@@ -133,7 +138,7 @@ docker-compose exec application bash
 # Using a local build in a project
 yarn install && yarn build && yarn pack # build a package.tgz
 cd path/to/project                      # go in the root directory of your project
-yarn add file:path/to/package.tgz      # install the locally built package 
+yarn add file:path/to/package.tgz       # install the locally built package
 ```
 
 

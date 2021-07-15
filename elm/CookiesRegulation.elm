@@ -7,7 +7,7 @@ import Browser.Events exposing (onResize)
 import Dict exposing (Dict)
 import Html exposing (Attribute, Html, div)
 import Html.Attributes exposing (id)
-import Internal.CookiesRegulationBandeau as CookiesRegulationBandeau
+import Internal.CookiesRegulationBanner as CookiesRegulationBanner
 import Internal.CookiesRegulationData exposing (..)
 import Internal.CookiesRegulationModal as CookiesRegulationModal
 import Internal.Helpers exposing (..)
@@ -31,6 +31,9 @@ port setPreferences : ( Preferences, Bool ) -> Cmd msg
 port initializeService : String -> Cmd msg
 
 
+port receiveDecisionMetadata : (DecisionMetadata -> msg) -> Sub msg
+
+
 
 -- Ports Sub
 
@@ -51,15 +54,20 @@ main =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     let
-        bandeauStateSub =
-            case model.bandeauState of
-                BandeauNeedOpen ->
-                    Browser.Events.onAnimationFrame (\_ -> InternalMsgOpenBandeau)
+        bannerStateSub =
+            case model.bannerState of
+                BannerNeedOpen ->
+                    Browser.Events.onAnimationFrame (\_ -> InternalMsgOpenBanner)
 
                 _ ->
                     Sub.none
     in
-    Sub.batch [ onResize InternalMsgResize, bandeauStateSub, openModal (\_ -> MsgOpenModal) ]
+    Sub.batch
+        [ onResize InternalMsgResize
+        , bannerStateSub
+        , openModal (\_ -> MsgOpenModal)
+        , receiveDecisionMetadata InternalMsgReceiveDecisionMetadata
+        ]
 
 
 
@@ -81,12 +89,12 @@ init flags =
         needUserAction_ =
             needUserAction mandatoryServices flags.preferences
 
-        initialBandeauState =
+        initialBannerState =
             if needUserAction_ then
-                BandeauNeedOpen
+                BannerNeedOpen
 
             else
-                BandeauClosed
+                BannerClosed
     in
     ( { website = flags.config.website
       , modal = flags.config.modal
@@ -95,10 +103,11 @@ init flags =
       , notMandatoryServices = filterNotMandatoryServices services
       , enabledMandatoryServices = enabledMandatoryServices
       , needUserAction = needUserAction_
-      , bandeauState = initialBandeauState
+      , bannerState = initialBannerState
       , modalState = ModalClosed
       , modalBodyScrollable = False
-      , local = decodeLocal flags.config.local
+      , locale = decodeLocale flags.config.locale
+      , lastDecisionMetadata = flags.decisionMetadata
       }
     , initializeServices services enabledMandatoryServices
     )
@@ -163,10 +172,10 @@ update msg model =
             , Cmd.none
             )
 
-        MsgBandeauAcceptAll ->
+        MsgBannerAcceptAll ->
             applyServiceStatusChanges (setAllServicesEnabledAction model)
 
-        MsgBandeauRejectAll ->
+        MsgBannerRejectAll ->
             applyServiceStatusChanges (setAllServicesDisabledAction model)
 
         MsgModalAcceptAll ->
@@ -189,11 +198,11 @@ update msg model =
             applyServiceStatusChanges model
 
         -- Internal
-        InternalMsgOpenBandeau ->
-            ( { model | bandeauState = BandeauOpened }, Cmd.none )
+        InternalMsgOpenBanner ->
+            ( { model | bannerState = BannerOpened }, Cmd.none )
 
-        InternalMsgCloseBandeau ->
-            ( { model | bandeauState = BandeauClosed }, Cmd.none )
+        InternalMsgCloseBanner ->
+            ( { model | bannerState = BannerClosed }, Cmd.none )
 
         InternalMsgCloseModal ->
             ( { model | modalState = ModalClosed, modalBodyScrollable = False }, modalClosed () )
@@ -209,6 +218,9 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
+        InternalMsgReceiveDecisionMetadata decisionMetadata ->
+            ( { model | lastDecisionMetadata = Just decisionMetadata }, Cmd.none )
+
 
 
 -- Actions
@@ -219,9 +231,9 @@ openModalAction model =
     { model | modalState = ModalOpened, modalBodyScrollable = False }
 
 
-closeBandeauAction : Model -> Model
-closeBandeauAction model =
-    { model | bandeauState = BandeauFadeClose }
+closeBannerAction : Model -> Model
+closeBannerAction model =
+    { model | bannerState = BannerFadeClose }
 
 
 closeModalAction : Model -> Model
@@ -277,7 +289,7 @@ applyServiceStatusChanges model =
     ( model
         |> resetNeedUserAction
         |> recomputeEnabledMandatoryServicesAction
-        |> closeBandeauAction
+        |> closeBannerAction
         |> closeModalAction
     , Cmd.batch ([ setPreferences ( buildPreferencesForSave model, hasRejectedService_ ) ] ++ loadServicesCmds)
     )
@@ -290,7 +302,7 @@ applyServiceStatusChanges model =
 view : Model -> Html Msg
 view model =
     div [ id "rich-id-cookies-regulation" ]
-        [ CookiesRegulationBandeau.view model
+        [ CookiesRegulationBanner.view model
         , CookiesRegulationModal.view model
         ]
 
