@@ -4,13 +4,13 @@ CookiesRegulation.init(
     {
         website: 'Cookies Regulation',
         privacyPolicy: {
-            url: 'https://example.com/privacy',
-            label: 'Privacy Policy',
+            url:             'https://example.com/privacy',
+            label:           'Privacy Policy',
             openInNewWindow: true,
         },
         modal: {
-            header: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras hendrerit, velit vitae accumsan pellentesque, sapien arcu gravida nibh, at accumsan nulla sapien sed magna. Integer sed sem dolor. Pellentesque feugiat, quam quis dapibus vehicula, risus morbi.',
-            relatedCompaniesCount: 5,
+            header:                           'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras hendrerit, velit vitae accumsan pellentesque, sapien arcu gravida nibh, at accumsan nulla sapien sed magna. Integer sed sem dolor. Pellentesque feugiat, quam quis dapibus vehicula, risus morbi.',
+            relatedCompaniesCount:            5,
             relatedCompaniesPrivacyPolicyUrl: 'https://example.com/companies'
         },
         services: {
@@ -18,8 +18,8 @@ CookiesRegulation.init(
                 name:         'Google Tag Manager',
                 description:  'Tag management system',
                 conservation: '6 months.',
-                service: 'googleTagManager',
-                options: {id: 'GTM-TEST'},
+                service:      'googleTagManager',
+                options:      {id: 'GTM-TEST'},
             },
             cookieTest1: {
                 name:         'Test Cookie',
@@ -27,6 +27,7 @@ CookiesRegulation.init(
                 conservation: '1 year.',
                 mandatory:    true,
                 initializationCallback: function () {
+                    console.log('initializationCallback cookieTest1');
                     alert('Cookie de test');
                 }
             },
@@ -44,6 +45,9 @@ CookiesRegulation.init(
             }
         },
         locale: 'en',
-        decisionLogCallback: (decision) => alert(decision)
+        decisionLogCallback: function (decision) {
+            console.log('decisionLogCallback');
+            alert(decision)
+        }
     }
 );

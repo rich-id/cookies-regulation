@@ -1,0 +1,14 @@
+name: Cypress Test
+on: [push]
+jobs:
+    cypress-run:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+            - name: Cypress run
+              uses: cypress-io/github-action@v2
+              with:
+                start: yarn run watch
+                wait-on: 'http://localhost:5502'
+                config: 'baseUrl=http://localhost:5502'
