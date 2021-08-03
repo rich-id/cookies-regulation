@@ -167,7 +167,7 @@ class ConfigurationLoader {
         let service = serviceConfiguration.service;
         let options = serviceConfiguration.options;
 
-        serviceConfiguration.mandatory = true;
+        serviceConfiguration.mandatory = false;
         serviceConfiguration.initializationCallback = function () {
             window.cookiesRegulationServices[service].callback(options);
         };
@@ -252,10 +252,10 @@ class CookieManager {
         for (let serviceId in window.cookiesRegulationConfig.services) {
             let service = window.cookiesRegulationConfig.services[serviceId];
 
-            let mandatory = typeof service.mandatory !== 'undefined' && service.mandatory;
+            let notMandatory = typeof service.mandatory === 'undefined' || !service.mandatory;
             let isEnabled = enabledServices.includes(serviceId)
 
-            if (mandatory && !isEnabled) {
+            if (notMandatory && !isEnabled) {
                 this.cleanServiceCookies(service);
             }
         }

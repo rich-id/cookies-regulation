@@ -64,8 +64,8 @@ modalBodyView model =
                 , privacyPolicyLinkView model
                 , globalActionButtonsView model
                 ]
-            , servicesListView model.locale (Trans.modal_cookies_with_agreement model.locale) model.mandatoryServices
-            , servicesListView model.locale (Trans.modal_cookies_without_agreement model.locale) model.notMandatoryServices
+            , servicesListView model.locale (Trans.modal_cookies_with_agreement model.locale) model.notMandatoryServices
+            , servicesListView model.locale (Trans.modal_cookies_without_agreement model.locale) model.mandatoryServices
             ]
         ]
 
@@ -108,8 +108,8 @@ serviceView locale service =
     in
     div [ class "cookies-regulation-service" ]
         [ div [ class "cookies-regulation-service-status" ]
-            [ htmlWhenNot service.mandatory <| Picto.padlock
-            , htmlWhen service.mandatory <|
+            [ htmlWhen service.mandatory <| Picto.padlock
+            , htmlWhenNot service.mandatory <|
                 SwitchCheckbox.view
                     { id = service.id
                     , isChecked = service.enabled
@@ -117,7 +117,7 @@ serviceView locale service =
                     }
             ]
         , div []
-            [ div [] [ span [ onClick (MsgUpdateServiceStatus service.id) |> attrWhen service.mandatory ] [ text service.name ] ]
+            [ div [] [ span [ onClick (MsgUpdateServiceStatus service.id) |> attrWhenNot service.mandatory ] [ text service.name ] ]
             , htmlWhenNotEmpty description (\message -> div [ class "cookies-regulation-service-description" ] [ text message ])
             , div [ class "cookies-regulation-service-conservation" ]
                 [ b [] [ text (Trans.modal_cookie_conservation locale) ]
