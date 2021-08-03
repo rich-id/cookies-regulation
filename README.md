@@ -66,7 +66,7 @@ window.CookiesRegulation = require('@rich-id/cookies-regulation');
                     name:         'Test Cookie', /* Service name (5) */
                     description:  'Test description.', /* Service description (6) */
                     conservation: '1 year.', /* Cookies conservation (7) */
-                    mandatory:    true, /* Does the service require user consent */
+                    mandatory:    false, /* Is the service mandatory */
                     initializationCallback: function () {
                     }
                 },
@@ -74,13 +74,13 @@ window.CookiesRegulation = require('@rich-id/cookies-regulation');
                     name:         'Other test cookie',
                     description:  null,
                     conservation: '6 months.',
-                    mandatory:    false,
+                    mandatory:    true,
                 },
                 cookieTest3: {
                     name:         'Other test cookie 2',
                     description:  null,
                     conservation: 'until you log out.',
-                    mandatory:    false,
+                    mandatory:    true,
                 }
             },
             locale: 'en', /* Local: en|fr */,

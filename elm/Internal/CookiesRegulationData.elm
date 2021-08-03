@@ -37,7 +37,7 @@ type alias Model =
     , privacyPolicy : PrivacyPolicy
     , mandatoryServices : Services
     , notMandatoryServices : Services
-    , enabledMandatoryServices : List ServiceId
+    , enabledNotMandatoryServices : List ServiceId
     , needUserAction : Bool
     , bannerState : BannerState
     , modalState : ModalState

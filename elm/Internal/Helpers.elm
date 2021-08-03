@@ -1,4 +1,4 @@
-module Internal.Helpers exposing (attrWhen, buildPreferencesForSave, filterMandatoryServices, filterNotMandatoryServices, getEnabledMandatoryServices, getEnabledMandatoryServicesByPreferences, getRejectedMandatoryServices, hasAcceptationChange, hasRejectedService, htmlJust, htmlWhen, htmlWhenNot, htmlWhenNotEmpty, isSerciceEnabledByPreferences, relatedCompaniesLabel, updateService)
+module Internal.Helpers exposing (attrWhen, attrWhenNot, buildPreferencesForSave, filterMandatoryServices, filterNotMandatoryServices, getEnabledNotMandatoryServices, getEnabledNotMandatoryServicesByPreferences, getRejectedNotMandatoryServices, hasAcceptationChange, hasRejectedService, htmlJust, htmlWhen, htmlWhenNot, htmlWhenNotEmpty, isSerciceEnabledByPreferences, relatedCompaniesLabel, updateService)
 
 import Dict
 import Html exposing (Attribute, Html, a, text)
@@ -14,6 +14,11 @@ attrWhen predicate attr =
 
     else
         class ""
+
+
+attrWhenNot : Bool -> Attribute msg -> Attribute msg
+attrWhenNot predicate =
+    attrWhen (not predicate)
 
 
 htmlWhen : Bool -> Html msg -> Html msg
@@ -64,7 +69,7 @@ updateService services serviceId updater =
 
 buildPreferencesForSave : Model -> Preferences
 buildPreferencesForSave model =
-    model.mandatoryServices
+    model.notMandatoryServices
         |> Dict.map (\serviceId service -> ( serviceId, service.enabled ))
         |> Dict.values
 
@@ -79,12 +84,12 @@ filterNotMandatoryServices services =
     Dict.filter (\_ service -> not service.mandatory) services
 
 
-getEnabledMandatoryServicesByPreferences : Preferences -> Services -> List ServiceId
-getEnabledMandatoryServicesByPreferences preferences mandatoryServices =
+getEnabledNotMandatoryServicesByPreferences : Preferences -> Services -> List ServiceId
+getEnabledNotMandatoryServicesByPreferences preferences notMandatoryServices =
     preferences
         |> List.filterMap
             (\( serviceId, isEnabled ) ->
-                if isEnabled && Dict.member serviceId mandatoryServices then
+                if isEnabled && Dict.member serviceId notMandatoryServices then
                     Just serviceId
 
                 else
@@ -92,17 +97,17 @@ getEnabledMandatoryServicesByPreferences preferences mandatoryServices =
             )
 
 
-getEnabledMandatoryServices : Services -> List ServiceId
-getEnabledMandatoryServices mandatoryServices =
-    mandatoryServices
+getEnabledNotMandatoryServices : Services -> List ServiceId
+getEnabledNotMandatoryServices notMandatoryServices =
+    notMandatoryServices
         |> Dict.values
         |> List.filter .enabled
         |> List.map .id
 
 
-getRejectedMandatoryServices : Services -> List ServiceId
-getRejectedMandatoryServices mandatoryServices =
-    mandatoryServices
+getRejectedNotMandatoryServices : Services -> List ServiceId
+getRejectedNotMandatoryServices notMandatoryServices =
+    notMandatoryServices
         |> Dict.values
         |> List.filter (not << .enabled)
         |> List.map .id
@@ -110,18 +115,18 @@ getRejectedMandatoryServices mandatoryServices =
 
 hasAcceptationChange : Model -> Bool
 hasAcceptationChange model =
-    (model.mandatoryServices
+    (model.notMandatoryServices
         |> Dict.filter (\_ service -> service.enabled)
         |> Dict.keys
     )
-        /= model.enabledMandatoryServices
+        /= model.enabledNotMandatoryServices
 
 
 hasRejectedService : Model -> Bool
 hasRejectedService model =
-    model.mandatoryServices
-        |> getRejectedMandatoryServices
-        |> List.filter (\serviceId -> List.member serviceId model.enabledMandatoryServices)
+    model.notMandatoryServices
+        |> getRejectedNotMandatoryServices
+        |> List.filter (\serviceId -> List.member serviceId model.enabledNotMandatoryServices)
         |> List.isEmpty
         |> not
 

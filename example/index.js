@@ -25,7 +25,7 @@ CookiesRegulation.init(
                 name:         'Test Cookie',
                 description:  'Test description.',
                 conservation: '1 year.',
-                mandatory:    true,
+                mandatory:    false,
                 initializationCallback: function () {
                     console.log('initializationCallback cookieTest1');
                     alert('Cookie de test');
@@ -35,13 +35,13 @@ CookiesRegulation.init(
                 name:         'Other test cookie',
                 description:  null,
                 conservation: '6 months.',
-                mandatory:    false,
+                mandatory:    true,
             },
             cookieTest3: {
                 name:         'Other test cookie 2',
                 description:  null,
                 conservation: 'until you log out.',
-                mandatory:    false,
+                mandatory:    true,
             }
         },
         locale: 'en',

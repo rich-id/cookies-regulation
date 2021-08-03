@@ -80,14 +80,14 @@ init flags =
         services =
             decodeServices flags
 
-        mandatoryServices =
-            filterMandatoryServices services
+        notMandatoryServices =
+            filterNotMandatoryServices services
 
-        enabledMandatoryServices =
-            getEnabledMandatoryServicesByPreferences flags.preferences mandatoryServices
+        enabledNotMandatoryServices =
+            getEnabledNotMandatoryServicesByPreferences flags.preferences notMandatoryServices
 
         needUserAction_ =
-            needUserAction mandatoryServices flags.preferences
+            needUserAction notMandatoryServices flags.preferences
 
         initialBannerState =
             if needUserAction_ then
@@ -99,9 +99,9 @@ init flags =
     ( { website = flags.config.website
       , modal = flags.config.modal
       , privacyPolicy = flags.config.privacyPolicy
-      , mandatoryServices = mandatoryServices
+      , mandatoryServices = filterMandatoryServices services
       , notMandatoryServices = filterNotMandatoryServices services
-      , enabledMandatoryServices = enabledMandatoryServices
+      , enabledNotMandatoryServices = enabledNotMandatoryServices
       , needUserAction = needUserAction_
       , bannerState = initialBannerState
       , modalState = ModalClosed
@@ -109,7 +109,7 @@ init flags =
       , locale = decodeLocale flags.config.locale
       , lastDecisionMetadata = flags.decisionMetadata
       }
-    , initializeServices services enabledMandatoryServices
+    , initializeServices services enabledNotMandatoryServices
     )
 
 
@@ -133,7 +133,7 @@ initializeServices services enabledServices =
         (services
             |> Dict.filter
                 (\serviceId service ->
-                    not service.mandatory || List.member serviceId enabledServices
+                    service.mandatory || List.member serviceId enabledServices
                 )
             |> Dict.keys
             |> List.map initializeService
@@ -186,8 +186,8 @@ update msg model =
 
         MsgUpdateServiceStatus serviceId ->
             ( { model
-                | mandatoryServices =
-                    updateService model.mandatoryServices
+                | notMandatoryServices =
+                    updateService model.notMandatoryServices
                         serviceId
                         (\service -> { service | enabled = not service.enabled })
               }
@@ -252,24 +252,24 @@ resetNeedUserAction model =
 
 setAllServicesEnabledAction : Model -> Model
 setAllServicesEnabledAction model =
-    { model | mandatoryServices = Dict.map (\_ service -> { service | enabled = True }) model.mandatoryServices }
+    { model | notMandatoryServices = Dict.map (\_ service -> { service | enabled = True }) model.notMandatoryServices }
 
 
 setAllServicesDisabledAction : Model -> Model
 setAllServicesDisabledAction model =
-    { model | mandatoryServices = Dict.map (\_ service -> { service | enabled = False }) model.mandatoryServices }
+    { model | notMandatoryServices = Dict.map (\_ service -> { service | enabled = False }) model.notMandatoryServices }
 
 
-recomputeEnabledMandatoryServicesAction : Model -> Model
-recomputeEnabledMandatoryServicesAction model =
-    { model | enabledMandatoryServices = getEnabledMandatoryServices model.mandatoryServices }
+recomputeEnabledNotMandatoryServicesAction : Model -> Model
+recomputeEnabledNotMandatoryServicesAction model =
+    { model | enabledNotMandatoryServices = getEnabledNotMandatoryServices model.notMandatoryServices }
 
 
 loadNotLoadedServices : Model -> List (Cmd msg)
 loadNotLoadedServices model =
-    model.mandatoryServices
-        |> getEnabledMandatoryServices
-        |> List.filter (\serviceId -> not (List.member serviceId model.enabledMandatoryServices))
+    model.notMandatoryServices
+        |> getEnabledNotMandatoryServices
+        |> List.filter (\serviceId -> not (List.member serviceId model.enabledNotMandatoryServices))
         |> List.map initializeService
 
 
@@ -288,7 +288,7 @@ applyServiceStatusChanges model =
     in
     ( model
         |> resetNeedUserAction
-        |> recomputeEnabledMandatoryServicesAction
+        |> recomputeEnabledNotMandatoryServicesAction
         |> closeBannerAction
         |> closeModalAction
     , Cmd.batch ([ setPreferences ( buildPreferencesForSave model, hasRejectedService_ ) ] ++ loadServicesCmds)
