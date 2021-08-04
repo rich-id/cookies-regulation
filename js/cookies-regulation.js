@@ -73,7 +73,7 @@ class CookiesRegulation {
         let preferences = data[0];
         let reloadPage = data[1];
 
-        let metadata = { uuid: uuidv4(), date: new Date().toLocaleString() };
+        let metadata = { uuid: uuidv4(), date: new Date().toISOString() };
         let decision = { preferences: preferences, metadata: metadata };
 
         this.decisionStorage.write(decision);

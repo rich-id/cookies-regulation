@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.4
+
+New features:
+* Add hotjar and googleAnalytics to the provided services
+
+Bug fixes:
+* Fix the date given in the decision callback
+
 ## 0.1.2
 
 New features:
