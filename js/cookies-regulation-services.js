@@ -30,12 +30,19 @@ window.cookiesRegulationServices.googleAnalytics = {
     cookiesIdentifiers: ['^ga.*$', '^_ga.*$', '^_gc.*$', '^_gi.*$', '^_hj.*$', '^__utma.*$', '^__utmb.*$', '^__utmc.*$', '^__utmt.*$', '^__utmz.*$', '^__gads.*$'],
     callback: function (options) {
         window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({
-            js:     new Date(),
-            config: options.id,
-        });
+        window.gtag = function gtag() {
+            window.dataLayer.push(arguments);
+        };
+
+        const additionalData = {anonymize_ip: false};
+
+        if (options.anonymize_ip === true) {
+            additionalData.anonymize_ip = true;
+        }
 
         insertScript('https://www.googletagmanager.com/gtag/js?id=' + options.id);
+        gtag('js', new Date());
+        gtag('config', options.id, additionalData);
     }
 };
 

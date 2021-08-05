@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.5
+
+New feature:
+* Add support for `anonymize_ip` option for Google Analytics
+
 ## 0.1.4
 
 New features:
