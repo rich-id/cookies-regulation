@@ -8,6 +8,7 @@ import Internal.Helpers exposing (attrWhen)
 
 type alias Configuration msg =
     { id : String
+    , label : String
     , isChecked : Bool
     , msg_ : msg
     }
@@ -20,7 +21,8 @@ view config =
         , class "cookies-regulation-switch-checkbox-container-checked" |> attrWhen config.isChecked
         ]
         [ div [ class "cookies-regulation-switch-checkbox-input-container" ]
-            [ input
+            [ label [ for config.id, class "label-hidden" ] [ text config.label ]
+            , input
                 [ class "cookies-regulation-switch-checkbox"
                 , type_ "checkbox"
                 , id config.id

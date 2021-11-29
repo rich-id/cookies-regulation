@@ -112,6 +112,7 @@ serviceView locale service =
             , htmlWhenNot service.mandatory <|
                 SwitchCheckbox.view
                     { id = service.id
+                    , label = service.name
                     , isChecked = service.enabled
                     , msg_ = MsgUpdateServiceStatus service.id
                     }
