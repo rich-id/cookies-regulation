@@ -1,17 +1,16 @@
 context('Cookies Regulation', () => {
     let consoleLog = [];
 
+    Cypress.on('window:before:load', win => {
+        cy.stub(win.console, 'log', (log) => {
+            consoleLog.push(log);
+        })
+    });
+
     beforeEach(() => {
         cy.clearCookies()
         consoleLog = [];
-
-        cy.visit('/', {
-            onBeforeLoad(win) {
-                cy.stub(win.console, 'log', (log) => {
-                    consoleLog.push(log);
-                })
-            }
-        })
+        cy.visit('/')
     })
 
     describe('Banner', () => {
