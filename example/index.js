@@ -27,7 +27,7 @@ CookiesRegulation.init(
                 conservation: '',
                 service:      'matomo',
                 enabledByDefault: true,
-                options:      {url: 'test.test', siteId: '1'},
+                options:      {url: '', siteId: '1'},
             },
             cookieTest1: {
                 name:         'Test Cookie',

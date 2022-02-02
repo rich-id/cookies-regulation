@@ -82,6 +82,8 @@ window.cookiesRegulationServices.matomo = {
         window._paq.push(['setTrackerUrl', u + 'matomo.php']);
         window._paq.push(['setSiteId', options.siteId]);
 
-        insertScript(u + 'matomo.js');
+        if (options.url !== '') {
+            insertScript(u + 'matomo.js');
+        }
     }
 };
