@@ -112,24 +112,27 @@ context('Cookies Regulation', () => {
             getService(0).contains('Tag management system')
             getService(0).contains('6 months')
 
-            getService(1).contains('Test Cookie')
-            getService(1).contains('Test description')
-            getService(1).contains('1 year')
+            getService(1).contains('Matomo')
+            getService(1).contains('Matomo description')
+
+            getService(2).contains('Test Cookie')
+            getService(2).contains('Test description')
+            getService(2).contains('1 year')
         })
 
         it('Should allow setting preference for specific services and saving', () => {
             editCookies()
 
-            toggleService(1)
-            getService(1).get('.cookies-regulation-switch-checkbox-container-checked').should('exist')
+            toggleService(2)
+            getService(2).get('.cookies-regulation-switch-checkbox-container-checked').should('exist')
             getModal().contains('Save my choices').click()
 
             assertAccepted()
 
             editCookies()
 
-            toggleService(1)
-            getService(1).find('.cookies-regulation-switch-checkbox-container-checked').should('not.exist')
+            toggleService(2)
+            getService(2).find('.cookies-regulation-switch-checkbox-container-checked').should('not.exist')
             getModal().contains('Save my choices').click()
 
             assertRefused()
@@ -138,11 +141,11 @@ context('Cookies Regulation', () => {
         it('Should display cookies exempted from consent', () => {
             editCookies()
 
-            getService(2).contains('Other test cookie')
-            getService(2).contains('6 months')
+            getService(3).contains('Other test cookie')
+            getService(3).contains('6 months')
 
-            getService(3).contains('Other test cookie 2')
-            getService(3).contains('until you log out')
+            getService(4).contains('Other test cookie 2')
+            getService(4).contains('until you log out')
         })
 
         it('Should display decision metadata in modal', () => {
