@@ -18,6 +18,17 @@ class CookiesRegulation {
         const decision = this.decisionStorage.read();
 
         this.cookieManager.cleanCookies(decision.preferences);
+
+        if (typeof decision.preferences !== 'undefined' && decision.preferences.length === 0) {
+            for (var serviceId in config.services) {
+                let serviceConfiguration = config.services[serviceId];
+
+                if (typeof serviceConfiguration.enabledByDefault !== 'undefined' && serviceConfiguration.enabledByDefault === true) {
+                    decision.preferences.push([serviceId, true]);
+                }
+            }
+        }
+
         this.initElm(decision, config);
     }
 

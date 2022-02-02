@@ -120,10 +120,13 @@ serviceView locale service =
         , div []
             [ div [] [ span [ onClick (MsgUpdateServiceStatus service.id) |> attrWhenNot service.mandatory ] [ text service.name ] ]
             , htmlWhenNotEmpty description (\message -> div [ class "cookies-regulation-service-description" ] [ text message ])
-            , div [ class "cookies-regulation-service-conservation" ]
-                [ b [] [ text (Trans.modal_cookie_conservation locale) ]
-                , text service.conservation
-                ]
+            , htmlWhenNotEmpty service.conservation
+                (\message ->
+                    div [ class "cookies-regulation-service-conservation" ]
+                        [ b [] [ text (Trans.modal_cookie_conservation locale) ]
+                        , text message
+                        ]
+                )
             ]
         ]
 

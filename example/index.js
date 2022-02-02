@@ -21,6 +21,14 @@ CookiesRegulation.init(
                 service:      'googleTagManager',
                 options:      {id: 'GTM-TEST'},
             },
+            matomo: {
+                name:         'Matomo',
+                description:  'Matomo description',
+                conservation: '',
+                service:      'matomo',
+                enabledByDefault: true,
+                options:      {url: 'test.test', siteId: '1'},
+            },
             cookieTest1: {
                 name:         'Test Cookie',
                 description:  'Test description.',
