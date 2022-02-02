@@ -68,3 +68,20 @@ window.cookiesRegulationServices.hotjar = {
         insertScript(url);
     }
 };
+
+// Matomo
+window.cookiesRegulationServices.matomo = {
+    requiredOptions: ['url', 'siteId'],
+    cookiesIdentifiers: [],
+    callback: function (options) {
+        var u = '//' + options.url + '/';
+
+        window._paq = window._paq || [];
+        window._paq.push(['trackPageView']);
+        window._paq.push(['enableLinkTracking']);
+        window._paq.push(['setTrackerUrl', u + 'matomo.php']);
+        window._paq.push(['setSiteId', options.siteId]);
+
+        insertScript(u + 'matomo.js');
+    }
+};
