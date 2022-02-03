@@ -1,6 +1,6 @@
 {
   "name": "@rich-id/cookies-regulation",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "scripts": {
     "build": "parcel build js/cookies-regulation.js",
     "build-release": "parcel build --no-source-maps js/cookies-regulation.js",
