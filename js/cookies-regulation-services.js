@@ -79,11 +79,10 @@ window.cookiesRegulationServices.matomo = {
         window._paq = window._paq || [];
         window._paq.push(['trackPageView']);
         window._paq.push(['enableLinkTracking']);
+        window._paq.push(['HeatmapSessionRecording::disable']);
         window._paq.push(['setTrackerUrl', u + 'matomo.php']);
         window._paq.push(['setSiteId', options.siteId]);
 
-        if (options.url !== '') {
-            insertScript(u + 'matomo.js');
-        }
+        insertScript(u + 'matomo.js');
     }
 };

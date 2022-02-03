@@ -49,7 +49,7 @@ CookiesRegulation.init(
                 conservation: '',
                 service:      'matomo',
                 enabledByDefault: true,
-                options:      {url: '', siteId: '1'},
+                options:      {url: 'test.test', siteId: '1'},
             },
         },
         locale: 'en',
