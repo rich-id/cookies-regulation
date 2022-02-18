@@ -10,6 +10,7 @@ CookiesRegulation.init(
         },
         modal: {
             header:                           'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras hendrerit, velit vitae accumsan pellentesque, sapien arcu gravida nibh, at accumsan nulla sapien sed magna. Integer sed sem dolor. Pellentesque feugiat, quam quis dapibus vehicula, risus morbi.',
+            headerWithoutConsent:             'Lorem ipsum no consent',
             relatedCompaniesCount:            5,
             relatedCompaniesPrivacyPolicyUrl: 'https://example.com/companies'
         },
@@ -20,12 +21,13 @@ CookiesRegulation.init(
                 conservation: '6 months.',
                 service:      'googleTagManager',
                 options:      {id: 'GTM-TEST'},
+                enabledByDefault: true,
             },
             cookieTest1: {
                 name:         'Test Cookie',
                 description:  'Test description.',
                 conservation: '1 year.',
-                mandatory:    false,
+                mandatory:    true,
                 initializationCallback: function () {
                     console.log('initializationCallback cookieTest1');
                     alert('Cookie de test');

@@ -58,13 +58,16 @@ modalBodyView model =
         ]
         [ div [ class "cookies-regulation-modal-body-content" ]
             [ div [ class "cookies-regulation-modal-body-content-top" ]
-                [ p [ class "cookies-regulation-modal-body-content-header" ] [ text model.modal.header ]
+                [ p [ class "cookies-regulation-modal-body-content-header" ] [  if model.noConsent then
+                                                                                    text <| model.modal.headerWithoutConsent
+                                                                                else
+                                                                                    text <| model.modal.header ]
                 , relatedCompaniesView model
-                , cookieDurationView model
+                , htmlWhen (not model.noConsent) <| cookieDurationView model
                 , privacyPolicyLinkView model
-                , globalActionButtonsView model
+                , htmlWhen (not model.noConsent) <| globalActionButtonsView model
                 ]
-            , servicesListView model.locale (Trans.modal_cookies_with_agreement model.locale) model.notMandatoryServices
+            , htmlWhen (not model.noConsent) <| servicesListView model.locale (Trans.modal_cookies_with_agreement model.locale) model.notMandatoryServices
             , servicesListView model.locale (Trans.modal_cookies_without_agreement model.locale) model.mandatoryServices
             ]
         ]
@@ -73,12 +76,20 @@ modalBodyView model =
 modalFooterView : Model -> Html Msg
 modalFooterView model =
     div [ class "cookies-regulation-modal-footer" ]
-        [ Button.view
-            { label = Trans.modal_save_my_choices model.locale
-            , type_ = Button.Primary
-            , disabled = not (hasAcceptationChange model) && not model.needUserAction
-            , msg = MsgSave
-            }
+        [ htmlWhen (not model.noConsent) <|
+            Button.view
+                { label = Trans.modal_save_my_choices model.locale
+                , type_ = Button.Primary
+                , disabled = not (hasAcceptationChange model) && not model.needUserAction
+                , msg = MsgSave
+                }
+        , htmlWhen model.noConsent <|
+            Button.view
+                 { label = "Close"
+                 , type_ = Button.Primary
+                 , disabled = False
+                 , msg = MsgCloseModal
+                 }
         , htmlJust model.lastDecisionMetadata <|
             decisionMetadataView
         ]

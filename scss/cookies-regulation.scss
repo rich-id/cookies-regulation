@@ -96,6 +96,12 @@
         width: 100%;
         z-index: 2147483644;
 
+        svg {
+            position: absolute;
+            right: 30px;
+            top: 24px;
+        }
+
         &:not(.cookies-regulation-show) {
             opacity: 0;
             pointer-events: none;

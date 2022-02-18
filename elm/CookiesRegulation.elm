@@ -89,12 +89,14 @@ init flags =
         needUserAction_ =
             needUserAction notMandatoryServices flags.preferences
 
-        initialBannerState =
+        initialBannerState = BannerNeedOpen
+
+        noConsentState =
             if needUserAction_ then
-                BannerNeedOpen
+                False
 
             else
-                BannerClosed
+                True
     in
     ( { website = flags.config.website
       , modal = flags.config.modal
@@ -108,6 +110,7 @@ init flags =
       , modalBodyScrollable = False
       , locale = decodeLocale flags.config.locale
       , lastDecisionMetadata = flags.decisionMetadata
+      , noConsent = noConsentState
       }
     , initializeServices services enabledNotMandatoryServices
     )

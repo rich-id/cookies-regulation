@@ -44,6 +44,7 @@ type alias Model =
     , modalBodyScrollable : Bool
     , locale : Locale
     , lastDecisionMetadata : Maybe DecisionMetadata
+    , noConsent : Bool
     }
 
 
@@ -56,6 +57,7 @@ type alias PrivacyPolicy =
 
 type alias ModalConfiguration =
     { header : String
+    , headerWithoutConsent : String
     , relatedCompaniesCount : Int
     , relatedCompaniesPrivacyPolicyUrl : String
     }

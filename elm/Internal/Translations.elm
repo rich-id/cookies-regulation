@@ -158,3 +158,22 @@ modal_user_choices_conservation_duration locale =
 
         Fr ->
             "Nous conservons vos choix pendant 6 mois."
+
+
+banner_cookies_no_consent : Locale -> String
+banner_cookies_no_consent locale =
+    case locale of
+        En ->
+            "Your privacy is important ! "
+
+        Fr ->
+            "Votre vie privée nous importe ! Nous n’utilisons aucun cookie indiscret nécessitant votre consentement."
+
+banner_cookies_button_details : Locale -> String
+banner_cookies_button_details locale =
+    case locale of
+        En ->
+            "Cookies details"
+
+        Fr ->
+            "Détails des cookies"
