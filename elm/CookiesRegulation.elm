@@ -80,9 +80,6 @@ init flags =
         services =
             decodeServices flags
 
-        mandatoryServices =
-            filterMandatoryServices services
-
         notMandatoryServices =
             filterNotMandatoryServices services
 
@@ -92,22 +89,12 @@ init flags =
         needUserAction_ =
             needUserAction notMandatoryServices flags.preferences
 
-        noConsentValid =
-                    (List.member "noConsent" (flags.preferences |> List.filterMap
-                         (\( serviceId, isEnabled ) ->
-                             if serviceId == "noConsent" && isEnabled then
-                                 Just serviceId
-
-                             else
-                                 Nothing
-                         )) )
-
         initialBannerState =
             if (not (Dict.isEmpty notMandatoryServices)) && needUserAction_ then
                 BannerNeedOpen
             else if (not (Dict.isEmpty notMandatoryServices)) && not needUserAction_ then
                 BannerClosed
-            else if Dict.isEmpty notMandatoryServices && not noConsentValid then
+            else if Dict.isEmpty notMandatoryServices && flags.decisionMetadata == Nothing then
                 BannerNeedOpen
             else
                 BannerClosed
@@ -221,9 +208,6 @@ update msg model =
         MsgSave ->
             applyServiceStatusChanges model
 
-        MsgSaveNoConsent ->
-            applyDecisionNoConsent model
-
         -- Internal
         InternalMsgOpenBanner ->
             ( { model | bannerState = BannerOpened }, Cmd.none )
@@ -319,20 +303,6 @@ applyServiceStatusChanges model =
         |> closeBannerAction
         |> closeModalAction
     , Cmd.batch ([ setPreferences ( buildPreferencesForSave model, hasRejectedService_ ) ] ++ loadServicesCmds)
-    )
-
-applyDecisionNoConsent : Model -> ( Model, Cmd msg )
-applyDecisionNoConsent model =
-    let
-        hasRejectedService_ =
-            hasRejectedService model
-    in
-    ( model
-        |> resetNeedUserAction
-        |> recomputeEnabledNotMandatoryServicesAction
-        |> closeBannerAction
-        |> closeModalAction
-    , Cmd.batch ([ setPreferences ( buildNoconsentForSave, hasRejectedService_ ) ])
     )
 
 -- View

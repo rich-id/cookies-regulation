@@ -88,7 +88,7 @@ modalFooterView model =
                  { label = Trans.banner_cookies_modal_button_no_consent_close model.locale
                  , type_ = Button.Primary
                  , disabled = False
-                 , msg = MsgSaveNoConsent
+                 , msg = MsgSave
                  }
         , htmlJust model.lastDecisionMetadata <|
             decisionMetadataView

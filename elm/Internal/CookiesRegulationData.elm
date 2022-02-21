@@ -121,7 +121,6 @@ type Msg
     | MsgModalRejectAll
     | MsgUpdateServiceStatus String
     | MsgSave
-    | MsgSaveNoConsent
     | InternalMsgOpenBanner
     | InternalMsgCloseBanner
     | InternalMsgCloseModal

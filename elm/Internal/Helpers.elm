@@ -1,4 +1,4 @@
-module Internal.Helpers exposing (attrWhen, attrWhenNot, buildPreferencesForSave, buildNoconsentForSave, filterMandatoryServices, filterNotMandatoryServices, getEnabledNotMandatoryServices, getEnabledNotMandatoryServicesByPreferences, getRejectedNotMandatoryServices, hasAcceptationChange, hasRejectedService, htmlJust, htmlWhen, htmlWhenNot, htmlWhenNotEmpty, isSerciceEnabledByPreferences, relatedCompaniesLabel, updateService)
+module Internal.Helpers exposing (attrWhen, attrWhenNot, buildPreferencesForSave, filterMandatoryServices, filterNotMandatoryServices, getEnabledNotMandatoryServices, getEnabledNotMandatoryServicesByPreferences, getRejectedNotMandatoryServices, hasAcceptationChange, hasRejectedService, htmlJust, htmlWhen, htmlWhenNot, htmlWhenNotEmpty, isSerciceEnabledByPreferences, relatedCompaniesLabel, updateService)
 
 import Dict
 import Html exposing (Attribute, Html, a, text)
@@ -72,12 +72,6 @@ buildPreferencesForSave model =
     model.notMandatoryServices
         |> Dict.map (\serviceId service -> ( serviceId, service.enabled ))
         |> Dict.values
-
-buildNoconsentForSave : Preferences
-buildNoconsentForSave =
-      [ ( "noConsent", True )]
-
-
 
 filterMandatoryServices : Services -> Services
 filterMandatoryServices services =
