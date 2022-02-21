@@ -53,7 +53,7 @@ CookiesRegulation.init(
             options:      {url: 'test.test', siteId: '1'},
           },
         },
-        locale: 'fr',
+        locale: 'en',
         decisionLogCallback: function (decision) {
             console.log('decisionLogCallback');
             alert(decision)
