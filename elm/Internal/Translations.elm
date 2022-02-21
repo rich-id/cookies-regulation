@@ -1,4 +1,4 @@
-module Internal.Translations exposing (Locale(..), banner_cookies_regulation, banner_customise, modal_accept_all, modal_cookie_conservation, modal_cookies_with_agreement, modal_cookies_without_agreement, modal_reject_all, modal_related_companies_link_label, modal_related_companies_use_cookies, modal_save_my_choices, modal_title, modal_user_choices_change, modal_user_choices_conservation_duration)
+module Internal.Translations exposing (Locale(..), banner_cookies_no_consent, banner_cookies_modal_button_no_consent_close, banner_cookies_button_details, banner_cookies_regulation, banner_customise, modal_accept_all, modal_cookie_conservation, modal_cookies_with_agreement, modal_cookies_without_agreement, modal_reject_all, modal_related_companies_link_label, modal_related_companies_use_cookies, modal_save_my_choices, modal_title, modal_user_choices_change, modal_user_choices_conservation_duration)
 
 
 type Locale
@@ -164,7 +164,7 @@ banner_cookies_no_consent : Locale -> String
 banner_cookies_no_consent locale =
     case locale of
         En ->
-            "Your privacy is important ! "
+            "Your privacy is important ! We do not use any cookie requiring your consent."
 
         Fr ->
             "Votre vie privée nous importe ! Nous n’utilisons aucun cookie indiscret nécessitant votre consentement."
@@ -177,3 +177,13 @@ banner_cookies_button_details locale =
 
         Fr ->
             "Détails des cookies"
+
+
+banner_cookies_modal_button_no_consent_close : Locale -> String
+banner_cookies_modal_button_no_consent_close locale =
+    case locale of
+        En ->
+            "Close"
+
+        Fr ->
+            "Fermer"

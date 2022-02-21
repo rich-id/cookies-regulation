@@ -85,10 +85,10 @@ modalFooterView model =
                 }
         , htmlWhen model.noConsent <|
             Button.view
-                 { label = "Close"
+                 { label = Trans.banner_cookies_modal_button_no_consent_close model.locale
                  , type_ = Button.Primary
                  , disabled = False
-                 , msg = MsgCloseModal
+                 , msg = MsgSaveNoConsent
                  }
         , htmlJust model.lastDecisionMetadata <|
             decisionMetadataView

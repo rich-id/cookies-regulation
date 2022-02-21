@@ -20,7 +20,7 @@ view model =
             , class "cookies-regulation-show" |> attrWhen (model.bannerState == BannerOpened)
             , Events.on "transitionend" (Decode.succeed InternalMsgCloseBanner) |> attrWhen (model.bannerState == BannerFadeClose)
             ]
-            [ htmlWhen (not model.noConsent) <|
+            [ htmlWhen model.needUserAction <|
                 div [ class "cookies-regulation-banner-contents" ]
                     [ span [ class "cookies-regulation-description" ] [ text <| Trans.banner_cookies_regulation model.locale ]
                     , Button.view { label = Trans.banner_customise model.locale, type_ = Button.Secondary, disabled = False, msg = MsgOpenModal }
@@ -35,8 +35,8 @@ view model =
                     ]
             , htmlWhen model.noConsent <|
                 div [ class "cookies-regulation-banner-contents" ]
-                    [ span [ class "cookies-regulation-description" ] [ text <| "banner_cookies_no_consent" ]
-                    , Button.view { label = "banner_cookies_button_details", type_ = Button.Secondary, disabled = False, msg = MsgOpenModal }
+                    [ span [ class "cookies-regulation-description" ] [ text <| Trans.banner_cookies_no_consent model.locale]
+                    , Button.view { label = Trans.banner_cookies_button_details model.locale, type_ = Button.Secondary, disabled = False, msg = MsgOpenModal }
                     , a
                         [ class "cookies-regulation-privacy-policy"
                         , href model.privacyPolicy.url
