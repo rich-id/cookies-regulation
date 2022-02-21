@@ -45,6 +45,6 @@ view model =
                         [ text model.privacyPolicy.label ]
                     ]
                 ,
-                Picto.close [ class "float-end", onClick InternalMsgCloseBanner ]
+                Picto.close [ class "float-end", onClick (if model.needUserAction then InternalMsgCloseBanner else MsgSave) ]
 
             ]

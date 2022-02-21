@@ -45,7 +45,7 @@ modalHeaderView model =
     div [ class "cookies-regulation-modal-header" ]
         [ div [ class "cookies-regulation-h3" ] [ text (Trans.modal_title model.locale) ]
         , htmlWhenNot model.needUserAction <|
-            Picto.close [ onClick MsgCloseModal ]
+            Picto.close [ onClick MsgSave ]
         ]
 
 
