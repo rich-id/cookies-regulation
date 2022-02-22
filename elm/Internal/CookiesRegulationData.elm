@@ -1,6 +1,6 @@
 module Internal.CookiesRegulationData exposing (BannerState(..), DecisionMetadata, Flags, FlagsConfiguration, ModalState(..), Model, Msg(..), Preferences, PrivacyPolicy, Service, ServiceId, Services, decodeLocale, serviceConfigurationDecoder)
 
-import Browser.Dom exposing (Error, Viewport)
+import Browser.Dom as Dom exposing (Error, Viewport)
 import Dict exposing (Dict)
 import Internal.Translations exposing (Locale(..))
 import Json.Decode as Decode
@@ -15,6 +15,7 @@ type alias Flags =
     { config : FlagsConfiguration
     , preferences : Preferences
     , decisionMetadata : Maybe DecisionMetadata
+    , isCookiePresent : Bool
     }
 
 
@@ -44,6 +45,8 @@ type alias Model =
     , modalBodyScrollable : Bool
     , locale : Locale
     , lastDecisionMetadata : Maybe DecisionMetadata
+    , noConsent : Bool
+    , isCookiePresent : Bool
     }
 
 
@@ -56,6 +59,7 @@ type alias PrivacyPolicy =
 
 type alias ModalConfiguration =
     { header : String
+    , headerWithoutConsent : String
     , relatedCompaniesCount : Int
     , relatedCompaniesPrivacyPolicyUrl : String
     }
@@ -111,7 +115,8 @@ type BannerState
 
 
 type Msg
-    = MsgOpenModal
+    = MsgFocus (Result Dom.Error ())
+    | MsgOpenModal
     | MsgCloseModal
     | MsgBannerAcceptAll
     | MsgBannerRejectAll

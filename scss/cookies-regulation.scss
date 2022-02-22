@@ -96,6 +96,19 @@
         width: 100%;
         z-index: 2147483644;
 
+        #cookies-regulation-close-banner {
+            background: transparent;
+            border: none;
+            position: absolute;
+            right: 30px;
+            top: 19px;
+            padding-top: 5px;
+
+            #cookies-regulation-close-icon {
+                fill: var(--rich-id-cookies-regulation-white) !important;
+            }
+        }
+
         &:not(.cookies-regulation-show) {
             opacity: 0;
             pointer-events: none;
@@ -229,10 +242,13 @@
                     text-align: center;
                     text-transform: uppercase;
 
-                    svg {
+                    #cookies-regulation-close {
+                        background: transparent;
+                        border: none;
+                        padding-top: 5px;
                         position: absolute;
                         right: 0;
-                        top: 24px;
+                        top: 19px;
                     }
                 }
 
@@ -405,7 +421,6 @@
             height: 24px;
             margin: 0;
             min-width: 36px;
-            outline: none !important;
             width: 36px;
 
             &:checked {

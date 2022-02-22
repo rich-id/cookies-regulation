@@ -73,7 +73,6 @@ buildPreferencesForSave model =
         |> Dict.map (\serviceId service -> ( serviceId, service.enabled ))
         |> Dict.values
 
-
 filterMandatoryServices : Services -> Services
 filterMandatoryServices services =
     Dict.filter (\_ service -> service.mandatory) services
