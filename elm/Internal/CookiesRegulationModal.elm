@@ -1,7 +1,7 @@
 module Internal.CookiesRegulationModal exposing (view)
 
 import Dict exposing (Dict)
-import Html exposing (Attribute, Html, a, b, div, p, span, text)
+import Html exposing (Attribute, Html, a, b, button, div, p, span, text)
 import Html.Attributes exposing (class, href, id, style, tabindex, target)
 import Html.Events as Events exposing (onClick)
 import Internal.Button as Button
@@ -17,7 +17,8 @@ view : Model -> Html Msg
 view model =
     div []
         [ div
-            [ class "cookies-regulation-modal"
+            [ id "cookies-regulation-modal"
+            , class "cookies-regulation-modal"
             , class "cookies-regulation-show" |> attrWhen (model.modalState == ModalOpened)
             , style "height" "0" |> attrWhen (model.modalState == ModalClosed)
             , Events.on "transitionend" (Decode.succeed InternalMsgCloseModal) |> attrWhen (model.modalState == ModalFadeClose)
@@ -45,7 +46,18 @@ modalHeaderView model =
     div [ class "cookies-regulation-modal-header" ]
         [ div [ class "cookies-regulation-h3" ] [ text (Trans.modal_title model.locale) ]
         , htmlWhenNot model.needUserAction <|
-            Picto.close [ id "cookies-regulation-close", onClick (if model.isCookiePresent then MsgCloseModal else MsgSave) ]
+            button
+                [ id "cookies-regulation-close"
+                , onClick
+                    (if model.isCookiePresent then
+                        MsgCloseModal
+
+                     else
+                        MsgSave
+                    )
+                ]
+                [ Picto.close []
+                ]
         ]
 
 
@@ -59,10 +71,11 @@ modalBodyView model =
         [ div [ class "cookies-regulation-modal-body-content" ]
             [ div [ class "cookies-regulation-modal-body-content-top" ]
                 [ p [ class "cookies-regulation-modal-body-content-header" ]
-                    [  if model.noConsent then
-                            text <| model.modal.headerWithoutConsent
-                        else
-                            text <| model.modal.header
+                    [ if model.noConsent then
+                        text <| model.modal.headerWithoutConsent
+
+                      else
+                        text <| model.modal.header
                     ]
                 , relatedCompaniesView model
                 , htmlWhen (not model.noConsent) <| cookieDurationView model
@@ -78,7 +91,8 @@ modalBodyView model =
 modalFooterView : Model -> Html Msg
 modalFooterView model =
     let
-        _ = Debug.log "test" (not (hasAcceptationChange model) && not model.needUserAction)
+        _ =
+            Debug.log "test" (not (hasAcceptationChange model) && not model.needUserAction)
     in
     div [ class "cookies-regulation-modal-footer" ]
         [ htmlWhen (not model.noConsent) <|
@@ -90,11 +104,16 @@ modalFooterView model =
                 }
         , htmlWhen model.noConsent <|
             Button.view
-                 { label = Trans.banner_cookies_modal_button_no_consent_close model.locale
-                 , type_ = Button.Primary
-                 , disabled = False
-                 , msg = if model.isCookiePresent then MsgCloseModal else MsgSave
-                 }
+                { label = Trans.banner_cookies_modal_button_no_consent_close model.locale
+                , type_ = Button.Primary
+                , disabled = False
+                , msg =
+                    if model.isCookiePresent then
+                        MsgCloseModal
+
+                    else
+                        MsgSave
+                }
         , htmlJust model.lastDecisionMetadata <|
             decisionMetadataView
         ]

@@ -1,7 +1,7 @@
 module Internal.Button exposing (ButtonType(..), view)
 
 import Html exposing (Attribute, Html, button, text)
-import Html.Attributes exposing (class)
+import Html.Attributes exposing (class, type_)
 import Html.Events exposing (onClick)
 import Internal.CookiesRegulationData exposing (Model, Msg)
 import Internal.Helpers exposing (..)
@@ -23,9 +23,10 @@ type ButtonType
 view : ButtonConfig Msg -> Html Msg
 view config =
     button
-        [ class "cookies-regulation-button"
+        [ type_ "button"
+        , class "cookies-regulation-button"
         , class "cookies-regulation-button-secondary" |> attrWhen (config.type_ == Secondary)
         , class "cookies-regulation-button-disabled" |> attrWhen config.disabled
-        , onClick config.msg
+        , onClick config.msg |> attrWhen (not config.disabled)
         ]
         [ text config.label ]

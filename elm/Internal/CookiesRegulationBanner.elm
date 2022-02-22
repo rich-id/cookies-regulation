@@ -1,16 +1,14 @@
 module Internal.CookiesRegulationBanner exposing (view)
 
-import Html exposing (Attribute, Html, a, div, span, text)
-import Html.Attributes exposing (class, href, target)
-import Html.Events as Events
+import Html exposing (Attribute, Html, a, button, div, span, text)
+import Html.Attributes exposing (attribute, class, href, id, target, type_)
+import Html.Events as Events exposing (onClick)
 import Internal.Button as Button
 import Internal.CookiesRegulationData exposing (BannerState(..), Model, Msg(..))
 import Internal.Helpers exposing (..)
+import Internal.Picto as Picto
 import Internal.Translations as Trans
 import Json.Decode as Decode
-import Html.Events exposing (onClick)
-import Internal.Picto as Picto
-import Html.Attributes exposing (id)
 
 
 view : Model -> Html Msg
@@ -36,7 +34,7 @@ view model =
                     ]
             , htmlWhen model.noConsent <|
                 div [ class "cookies-regulation-banner-contents" ]
-                    [ span [ class "cookies-regulation-description" ] [ text <| Trans.banner_cookies_no_consent model.locale]
+                    [ span [ class "cookies-regulation-description" ] [ text <| Trans.banner_cookies_no_consent model.locale ]
                     , Button.view { label = Trans.banner_cookies_button_details model.locale, type_ = Button.Secondary, disabled = False, msg = MsgOpenModal }
                     , a
                         [ class "cookies-regulation-privacy-policy"
@@ -45,7 +43,19 @@ view model =
                         ]
                         [ text model.privacyPolicy.label ]
                     ]
-                ,
-                Picto.close [ id "cookies-regulation-close-banner", onClick (if model.needUserAction then InternalMsgCloseBanner else MsgSave) ]
+            , htmlWhen model.noConsent <|
+                button
+                    [ id "cookies-regulation-close-banner"
+                    , type_ "button"
+                    , attribute "aria-label" (Trans.banner_close model.locale)
+                    , onClick
+                        (if model.needUserAction then
+                            InternalMsgCloseBanner
 
+                         else
+                            MsgSave
+                        )
+                    ]
+                    [ Picto.close []
+                    ]
             ]

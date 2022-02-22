@@ -2,7 +2,7 @@ port module CookiesRegulation exposing (main)
 
 import Bool.Extra as Bool
 import Browser
-import Browser.Dom exposing (Error, Viewport, getViewportOf)
+import Browser.Dom as Dom exposing (Error, Viewport, getViewportOf)
 import Browser.Events exposing (onResize)
 import Dict exposing (Dict)
 import Html exposing (Attribute, Html, div)
@@ -90,15 +90,17 @@ init flags =
             needUserAction notMandatoryServices flags.preferences
 
         initialBannerState =
-            if (not (Dict.isEmpty notMandatoryServices)) && needUserAction_ then
+            if not (Dict.isEmpty notMandatoryServices) && needUserAction_ then
                 BannerNeedOpen
-            else if (not (Dict.isEmpty notMandatoryServices)) && not needUserAction_ then
-                BannerClosed
-            else if Dict.isEmpty notMandatoryServices && not flags.isCookiePresent then
-                BannerNeedOpen
-            else
+
+            else if not (Dict.isEmpty notMandatoryServices) && not needUserAction_ then
                 BannerClosed
 
+            else if Dict.isEmpty notMandatoryServices && not flags.isCookiePresent then
+                BannerNeedOpen
+
+            else
+                BannerClosed
     in
     ( { website = flags.config.website
       , modal = flags.config.modal
@@ -166,10 +168,13 @@ needUserAction services preferences =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        MsgFocus _ ->
+            ( model, Cmd.none )
+
         MsgOpenModal ->
             ( model
                 |> openModalAction
-            , Cmd.batch [ modalOpened (), modalBodySizeCmd ]
+            , Cmd.batch [ modalOpened (), modalBodySizeCmd, Dom.focus "cookies-regulation-modal" |> Task.attempt MsgFocus ]
             )
 
         MsgCloseModal ->
@@ -260,6 +265,7 @@ addCookie : Model -> Model
 addCookie model =
     { model | isCookiePresent = True }
 
+
 setAllServicesEnabledAction : Model -> Model
 setAllServicesEnabledAction model =
     { model | notMandatoryServices = Dict.map (\_ service -> { service | enabled = True }) model.notMandatoryServices }
@@ -304,6 +310,8 @@ applyServiceStatusChanges model =
         |> closeModalAction
     , Cmd.batch ([ setPreferences ( buildPreferencesForSave model, hasRejectedService_ ) ] ++ loadServicesCmds)
     )
+
+
 
 -- View
 
