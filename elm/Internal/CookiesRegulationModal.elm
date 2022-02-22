@@ -45,7 +45,7 @@ modalHeaderView model =
     div [ class "cookies-regulation-modal-header" ]
         [ div [ class "cookies-regulation-h3" ] [ text (Trans.modal_title model.locale) ]
         , htmlWhenNot model.needUserAction <|
-            Picto.close [ onClick MsgSave ]
+            Picto.close [ id "cookies-regulation-close", onClick (if model.isCookiePresent then MsgCloseModal else MsgSave) ]
         ]
 
 
@@ -58,10 +58,12 @@ modalBodyView model =
         ]
         [ div [ class "cookies-regulation-modal-body-content" ]
             [ div [ class "cookies-regulation-modal-body-content-top" ]
-                [ p [ class "cookies-regulation-modal-body-content-header" ] [  if model.noConsent then
-                                                                                    text <| model.modal.headerWithoutConsent
-                                                                                else
-                                                                                    text <| model.modal.header ]
+                [ p [ class "cookies-regulation-modal-body-content-header" ]
+                    [  if model.noConsent then
+                            text <| model.modal.headerWithoutConsent
+                        else
+                            text <| model.modal.header
+                    ]
                 , relatedCompaniesView model
                 , htmlWhen (not model.noConsent) <| cookieDurationView model
                 , privacyPolicyLinkView model
@@ -75,6 +77,9 @@ modalBodyView model =
 
 modalFooterView : Model -> Html Msg
 modalFooterView model =
+    let
+        _ = Debug.log "test" (not (hasAcceptationChange model) && not model.needUserAction)
+    in
     div [ class "cookies-regulation-modal-footer" ]
         [ htmlWhen (not model.noConsent) <|
             Button.view
@@ -88,7 +93,7 @@ modalFooterView model =
                  { label = Trans.banner_cookies_modal_button_no_consent_close model.locale
                  , type_ = Button.Primary
                  , disabled = False
-                 , msg = MsgSave
+                 , msg = if model.isCookiePresent then MsgCloseModal else MsgSave
                  }
         , htmlJust model.lastDecisionMetadata <|
             decisionMetadataView

@@ -45,7 +45,8 @@ class CookiesRegulation {
             flags: {
                 preferences: decision.preferences,
                 decisionMetadata: decision.metadata,
-                config: config
+                config: config,
+                isCookiePresent: this.cookieManager.getAllCookiesName().includes(DECISION_COOKIE_NAME)
             },
         });
 

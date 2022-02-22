@@ -96,10 +96,14 @@
         width: 100%;
         z-index: 2147483644;
 
-        svg {
+        #cookies-regulation-close-banner {
             position: absolute;
             right: 30px;
             top: 24px;
+
+            #cookies-regulation-close-icon {
+                fill: var(--rich-id-cookies-regulation-white) !important;
+            }
         }
 
         &:not(.cookies-regulation-show) {

@@ -94,17 +94,11 @@ init flags =
                 BannerNeedOpen
             else if (not (Dict.isEmpty notMandatoryServices)) && not needUserAction_ then
                 BannerClosed
-            else if Dict.isEmpty notMandatoryServices && flags.decisionMetadata == Nothing then
+            else if Dict.isEmpty notMandatoryServices && not flags.isCookiePresent then
                 BannerNeedOpen
             else
                 BannerClosed
 
-        noConsentState =
-            if not (Dict.isEmpty notMandatoryServices) then
-                False
-
-            else
-                True
     in
     ( { website = flags.config.website
       , modal = flags.config.modal
@@ -118,7 +112,8 @@ init flags =
       , modalBodyScrollable = False
       , locale = decodeLocale flags.config.locale
       , lastDecisionMetadata = flags.decisionMetadata
-      , noConsent = noConsentState
+      , noConsent = Dict.isEmpty notMandatoryServices
+      , isCookiePresent = flags.isCookiePresent
       }
     , initializeServices services enabledNotMandatoryServices
     )
@@ -261,6 +256,10 @@ resetNeedUserAction model =
     { model | needUserAction = False }
 
 
+addCookie : Model -> Model
+addCookie model =
+    { model | isCookiePresent = True }
+
 setAllServicesEnabledAction : Model -> Model
 setAllServicesEnabledAction model =
     { model | notMandatoryServices = Dict.map (\_ service -> { service | enabled = True }) model.notMandatoryServices }
@@ -299,6 +298,7 @@ applyServiceStatusChanges model =
     in
     ( model
         |> resetNeedUserAction
+        |> addCookie
         |> recomputeEnabledNotMandatoryServicesAction
         |> closeBannerAction
         |> closeModalAction

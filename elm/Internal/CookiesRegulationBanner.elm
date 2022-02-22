@@ -10,6 +10,7 @@ import Internal.Translations as Trans
 import Json.Decode as Decode
 import Html.Events exposing (onClick)
 import Internal.Picto as Picto
+import Html.Attributes exposing (id)
 
 
 view : Model -> Html Msg
@@ -45,6 +46,6 @@ view model =
                         [ text model.privacyPolicy.label ]
                     ]
                 ,
-                Picto.close [ class "float-end", onClick (if model.needUserAction then InternalMsgCloseBanner else MsgSave) ]
+                Picto.close [ id "cookies-regulation-close-banner", onClick (if model.needUserAction then InternalMsgCloseBanner else MsgSave) ]
 
             ]

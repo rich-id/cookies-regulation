@@ -15,6 +15,7 @@ type alias Flags =
     { config : FlagsConfiguration
     , preferences : Preferences
     , decisionMetadata : Maybe DecisionMetadata
+    , isCookiePresent : Bool
     }
 
 
@@ -45,6 +46,7 @@ type alias Model =
     , locale : Locale
     , lastDecisionMetadata : Maybe DecisionMetadata
     , noConsent : Bool
+    , isCookiePresent : Bool
     }
 
 
