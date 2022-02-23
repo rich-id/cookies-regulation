@@ -90,10 +90,6 @@ modalBodyView model =
 
 modalFooterView : Model -> Html Msg
 modalFooterView model =
-    let
-        _ =
-            Debug.log "test" (not (hasAcceptationChange model) && not model.needUserAction)
-    in
     div [ class "cookies-regulation-modal-footer" ]
         [ htmlWhen (not model.noConsent) <|
             Button.view
