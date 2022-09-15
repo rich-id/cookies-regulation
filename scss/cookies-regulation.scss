@@ -123,6 +123,10 @@
             flex-direction: column;
             padding: 8px 32px;
 
+            &.cookies-regulation-banner-contents-no-consent {
+                padding-right: 65px;
+            }
+
             span.cookies-regulation-description {
                 color: var(--rich-id-cookies-regulation-white);
                 padding-bottom: 8px;

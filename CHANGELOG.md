@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.1
+
+Bug fixes:
+* Fix no consent cloding cross overflow
+
+## 0.2.0
+
+New feature:
+* Add support for no consent cookies (only cookies without consent)
+
 ## 0.1.5
 
 New feature:

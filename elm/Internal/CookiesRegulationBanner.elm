@@ -33,7 +33,7 @@ view model =
                         [ text model.privacyPolicy.label ]
                     ]
             , htmlWhen model.noConsent <|
-                div [ class "cookies-regulation-banner-contents" ]
+                div [ class "cookies-regulation-banner-contents cookies-regulation-banner-contents-no-consent" ]
                     [ span [ class "cookies-regulation-description" ] [ text <| Trans.banner_cookies_no_consent model.locale ]
                     , Button.view { label = Trans.banner_cookies_button_details model.locale, type_ = Button.Secondary, disabled = False, msg = MsgOpenModal }
                     , a
