@@ -41,11 +41,11 @@
 
     a {
         color: var(--rich-id-cookies-regulation-dark);
-        text-decoration: underline;
+        text-decoration: none;
 
         &:hover {
             cursor: pointer;
-            text-decoration: none;
+            text-decoration: underline;
         }
     }
 
@@ -137,12 +137,12 @@
                 color: var(--rich-id-cookies-regulation-white);
                 padding-bottom: 8px;
                 padding-top: 8px;
-                text-decoration: underline;
+                text-decoration: none;
 
                 &:hover {
                     color: var(--rich-id-cookies-regulation-white);
                     cursor: pointer;
-                    text-decoration: none;
+                    text-decoration: underline;
                 }
             }
 
