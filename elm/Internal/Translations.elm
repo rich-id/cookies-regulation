@@ -23,7 +23,7 @@ modal_close locale =
             "Close modal"
 
         Fr ->
-            "Fermer"
+            "Fermer la modale des cookies"
 
 
 banner_close : Locale -> String
