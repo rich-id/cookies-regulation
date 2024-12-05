@@ -33,7 +33,7 @@ banner_close locale =
             "Close banner"
 
         Fr ->
-            "Fermer"
+            "Fermer le bandeau des cookies"
 
 
 banner_customise : Locale -> String

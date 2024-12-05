@@ -21,6 +21,7 @@ view model =
             , class "cookies-regulation-modal"
             , class "cookies-regulation-show" |> attrWhen (model.modalState == ModalOpened)
             , style "height" "0" |> attrWhen (model.modalState == ModalClosed)
+            , style "display" "none" |> attrWhen (model.modalState == ModalClosed)
             , Events.on "transitionend" (Decode.succeed InternalMsgCloseModal) |> attrWhen (model.modalState == ModalFadeClose)
             , tabindex -1
             ]
