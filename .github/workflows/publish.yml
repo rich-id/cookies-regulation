@@ -14,13 +14,13 @@ jobs:
                   persist-credentials: false
 
             - name: Start docker 🔧
-              run: docker network create proxy && docker-compose -f docker-compose.yml -f .github/docker-compose.yml up -d
+              run: docker network create proxy && docker compose -f docker-compose.yml -f .github/docker-compose.yml up -d
 
             - name: Install the dependencies 🔧
-              run: docker-compose exec -T -e CYPRESS_INSTALL_BINARY=0 application yarn install
+              run: docker compose exec -T -e CYPRESS_INSTALL_BINARY=0 application yarn install
 
             - name: Build
-              run: docker-compose exec -T application yarn build-release
+              run: docker compose exec -T application yarn build-release
 
             - name: Upload Js to release
               uses: svenstaro/upload-release-action@v2
@@ -47,13 +47,13 @@ jobs:
                   persist-credentials: false
 
             - name: Start docker 🔧
-              run: docker network create proxy && docker-compose -f docker-compose.yml -f .github/docker-compose.yml up -d
+              run: docker network create proxy && docker compose -f docker-compose.yml -f .github/docker-compose.yml up -d
 
             - name: Install the dependencies 🔧
-              run: docker-compose exec -T -e CYPRESS_INSTALL_BINARY=0 application yarn install
+              run: docker compose exec -T -e CYPRESS_INSTALL_BINARY=0 application yarn install
 
             - name: Build
-              run: docker-compose exec -T application yarn build
+              run: docker compose exec -T application yarn build
 
             - name: Publish to NPM
               uses: JS-DevTools/npm-publish@v1
