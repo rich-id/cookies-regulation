@@ -2,7 +2,7 @@ module Internal.CookiesRegulationModal exposing (view)
 
 import Dict exposing (Dict)
 import Html exposing (Attribute, Html, a, b, button, div, p, span, text)
-import Html.Attributes exposing (class, href, id, style, tabindex, target)
+import Html.Attributes exposing (attribute, class, href, id, style, tabindex, target, title)
 import Html.Events as Events exposing (onClick)
 import Internal.Button as Button
 import Internal.CookiesRegulationData exposing (..)
@@ -55,6 +55,8 @@ modalHeaderView model =
                      else
                         MsgSave
                     )
+                , title (Trans.modal_close model.locale)
+                , attribute "aria-label" (Trans.modal_close model.locale)
                 ]
                 [ Picto.close []
                 ]

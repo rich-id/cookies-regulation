@@ -1,4 +1,4 @@
-module Internal.Translations exposing (Locale(..), banner_close, banner_cookies_button_details, banner_cookies_modal_button_no_consent_close, banner_cookies_no_consent, banner_cookies_regulation, banner_customise, modal_accept_all, modal_cookie_conservation, modal_cookies_with_agreement, modal_cookies_without_agreement, modal_reject_all, modal_related_companies_link_label, modal_related_companies_use_cookies, modal_save_my_choices, modal_title, modal_user_choices_change, modal_user_choices_conservation_duration)
+module Internal.Translations exposing (Locale(..), banner_close, banner_cookies_button_details, banner_cookies_modal_button_no_consent_close, banner_cookies_no_consent, banner_cookies_regulation, banner_customise, modal_accept_all, modal_close, modal_cookie_conservation, modal_cookies_with_agreement, modal_cookies_without_agreement, modal_reject_all, modal_related_companies_link_label, modal_related_companies_use_cookies, modal_save_my_choices, modal_title, modal_user_choices_change, modal_user_choices_conservation_duration)
 
 
 type Locale
@@ -14,6 +14,16 @@ banner_cookies_regulation locale =
 
         Fr ->
             "Contrôlez les cookies que nous utilisons pour ce site..."
+
+
+modal_close : Locale -> String
+modal_close locale =
+    case locale of
+        En ->
+            "Close modal"
+
+        Fr ->
+            "Fermer"
 
 
 banner_close : Locale -> String
