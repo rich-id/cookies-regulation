@@ -174,7 +174,7 @@ update msg model =
         MsgOpenModal ->
             ( model
                 |> openModalAction
-            , Cmd.batch [ modalOpened (), modalBodySizeCmd, Dom.focus "cookies-regulation-modal" |> Task.attempt MsgFocus ]
+            , Cmd.batch [ modalOpened (), modalBodySizeCmd ]
             )
 
         MsgCloseModal ->

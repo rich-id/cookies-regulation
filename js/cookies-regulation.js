@@ -4,6 +4,8 @@ import { Elm } from './../elm/CookiesRegulation.elm';
 import { v4 as uuidv4 } from 'uuid';
 
 const DECISION_COOKIE_NAME = 'cookie_regulation_decision';
+const SELECTORS = ':not([tabindex="-1"]):not([disabled]):not([type=hidden])';
+const FOCUSABLE_SELECTOR = 'a[href]' + SELECTORS + ', button' + SELECTORS + ', textarea' + SELECTORS + ', input' + SELECTORS + ', select' + SELECTORS + ':not(.ts-hidden-accessible), *[tabindex]' + SELECTORS + ', *[contenteditable]' + SELECTORS + '';
 
 class CookiesRegulation {
     constructor() {
@@ -50,17 +52,9 @@ class CookiesRegulation {
             },
         });
 
-        window.cookiesRegulationBlock.ports.modalOpened.subscribe(
-            function () {
-                document.querySelector('body').classList.add('cookies-regulation-modal-open');
-            }
-        );
-
-        window.cookiesRegulationBlock.ports.modalClosed.subscribe(
-            function () {
-                document.querySelector('body').classList.remove('cookies-regulation-modal-open');
-            }
-        );
+        const that = this;
+        window.cookiesRegulationBlock.ports.modalOpened.subscribe(() => that.modalOpened(that));
+        window.cookiesRegulationBlock.ports.modalClosed.subscribe(() => that.modalClosed(that));
 
         window.cookiesRegulationBlock.ports.initializeService.subscribe((serviceName) => this.initializeService(serviceName));
         window.cookiesRegulationBlock.ports.setPreferences.subscribe((data) => this.setPreferences(data));
@@ -95,6 +89,46 @@ class CookiesRegulation {
 
         if (reloadPage) {
             window.location.reload();
+        }
+    }
+
+    modalOpened (that) {
+        document.querySelector('body').classList.add('cookies-regulation-modal-open');
+        const modal = document.getElementById('cookies-regulation-modal');
+
+        modal.addEventListener("keydown", that.loopFocus);
+        requestAnimationFrame(() => {
+            modal.querySelector(FOCUSABLE_SELECTOR).focus({ focusVisible: true });
+        });
+    }
+
+    modalClosed (that) {
+        document.querySelector('body').classList.remove('cookies-regulation-modal-open');
+
+        const modal = document.getElementById('cookies-regulation-modal');
+        modal.removeEventListener("keydown", that.loopFocus);
+    }
+
+    loopFocus (event) {
+        if (!(event.key === 'Tab' || event.keyCode === 9)) {
+            return;
+        }
+
+        const modal = document.getElementById('cookies-regulation-modal');
+        var focusableEls = modal.querySelectorAll(FOCUSABLE_SELECTOR);
+        var firstFocusableEl = focusableEls[0];
+        var lastFocusableEl = focusableEls[focusableEls.length - 1];
+
+        if (event.shiftKey) {
+            if (document.activeElement === firstFocusableEl) {
+                lastFocusableEl.focus({ focusVisible: true });
+                event.preventDefault();
+            }
+        } else {
+            if (document.activeElement === lastFocusableEl) {
+                firstFocusableEl.focus({ focusVisible: true });
+                event.preventDefault();
+            }
         }
     }
 }
